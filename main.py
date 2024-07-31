@@ -1,6 +1,7 @@
 import pygame as py
 from config import *
-from mapa import *
+from player import *
+from monster import *
 
 
 mapa = ["00000000400000000000000000000000",
@@ -9,19 +10,24 @@ mapa = ["00000000400000000000000000000000",
         "01110010100000000111101000010100",
         "01111110101111100111111011111110",
         "01000110111111110000111000010000",
-        "01101110101111111110101111111110",
+        "01101110101111111110101111311110",
         "00001010101111111010100000000010",
         "01111011101111100010101111111110",
-        "00000000101111111010101000010010",
+        "00000000101131111010101000010010",
         "00000000101111111110111111111110",
         "01111100100000000110100111000010",
         "01001100111111111111110111111110",
         "01001111100100111111110100001110",
         "01111001100100111111110111111110",
         "01011001100100111111110110000010",
-        "01011111111111110000011111111110",
-        "00000000000000000000001100000000"]
+        "01011111111111110000011111311110",
+        "00000000000000000000011000000000"]
 
+
+class Wall(object):
+    def __init__(self, pos):
+        self.rect = py.Rect(pos[0], pos[1], 40, 40)
+        self.image = pygame.image.load('wall.png')
 
 class Jogo:
     def __init__(self):
@@ -33,30 +39,72 @@ class Jogo:
         self.clock = py.time.Clock()
 
 
-    def mostrar_tela(self):
+    def mostrar_tela(self, walls, player, monsters):
         while True:
             key = py.key.get_pressed()
             
             if key[py.K_LEFT]:
-                player.move(-2, 0)
+                player[0].move(-2, 0)
             if key[py.K_RIGHT]:
-                player.move(2, 0)
+                player[0].move(2, 0)
             if key[py.K_UP]:
-                player.move(0, -2)
+                player[0].move(0, -2)
             if key[py.K_DOWN]:
-                player.move(0, 2)
+                player[0].move(0, 2)
             for event in py.event.get():
                 if event.type == py.QUIT or key[py.K_ESCAPE]:
                     py.quit()
 
-            [teste, player, teste2] = mapa_jogo(mapa)
-            rect_fundo = mapa.get_rect(topleft=(0, 100))
+            
+
+            # Desenho dos elementos: paredes, jogador e inimigos
+            background = py.image.load('mapa_cincontre.png')            
             self.tela.fill('white')
-            self.tela.blit(mapa, rect_fundo)
+            self.tela.blit(background, (0,0))
+            
+            # Player e uma lista de objetos Player()
+            for jog in player:
+                pygame.draw.rect(self.tela, 'purple', jog.rect)
+
+            # Walls e uma lista de objetos Wall()
+            for wall in walls:
+                self.tela.blit(wall.image, wall.rect)
+            
+            # Monsters e uma lista de objetos Monster()
+            for monster in monsters:
+                pygame.draw.rect(self.tela, 'blue', monster.rect)
+                monster.move()
+            
             py.display.update()
+
             self.clock.tick(FPS)
 
+#player = 4
+#parede = 0
+#chao = 1
+def mapa_jogo(mapa):
+    walls = []
+    player = []
+    monsters = []
+
+    #Parse the level string above. W = wall, F = exit, P = player
+    x = y = 0
+    for row in mapa:
+        for col in row:
+            col = int(col)
+            if col == 0:
+                walls.append(Wall((x, y)))
+            if col == 4:
+                player.append(Player((x, y)))
+            if col == 3:
+                monsters.append(Monster((x, y)))
+            x += 40
+        y += 40
+        x = 0
+    return walls, player, monsters
+
+walls, player, monsters = mapa_jogo(mapa)
 
 if __name__ == '__main__':  # jogo só será iniciado a partir do arquivo main
     jogo = Jogo()
-    jogo.mostrar_tela()
+    jogo.mostrar_tela(walls, player, monsters)

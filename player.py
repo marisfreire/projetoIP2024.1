@@ -1,10 +1,10 @@
 import pygame
-from mapa import walls
+
 
 class Player(object):
     def __init__(self, pos):
         self.rect = pygame.Rect(pos[0], pos[1], 30, 30) #x-axis, y-axis, width, height
-        self.image = pygame.image.load('image.png')
+        self.image = pygame.image.load('Letter.png')
 
     def move(self, dx, dy):
         #Move each axis separately. NB this checks for collisions both times
@@ -14,9 +14,10 @@ class Player(object):
             self.move_single_axis(0, dy)
 
     def move_single_axis(self, dx, dy):
+        from main import walls
         #Move the rect
-        self.rect.x += dx
-        self.rect.y += dy
+        self.rect.x += dx * 10
+        self.rect.y += dy * 10
 
         #If you collide with a wall, move out based on velocity
         for wall in walls:
