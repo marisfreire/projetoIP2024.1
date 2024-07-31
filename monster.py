@@ -15,20 +15,20 @@ class Monster(object):
         self.rect.x += dx
         self.rect.y += dy
 
-        #If you collide with a wall, move out based on velocity
+        # Colide com a parede, move pro outro lado aleatório
         collide = False
         from main import walls
         for wall in walls:
             if self.rect.colliderect(wall.rect):
                 collide = True
 
-                if dx > 0: #Moving right, hit the left side of wall
+                if dx > 0:  # Move pra direita, bateu no lado esquerdo da parede
                     self.rect.right = wall.rect.left
-                if dx < 0: #Moving left, hit the right side of wall
+                if dx < 0:  # Move para esquerda, bateu no lado direito da parede
                     self.rect.left = wall.rect.right
-                if dy > 0: #Moving down, hit the top side of wall
+                if dy > 0:  # Move para baixo, bateu no lado de cima da parede
                     self.rect.bottom = wall.rect.top
-                if dy < 0: #Moving up, hit the bottom side of wall
+                if dy < 0:  # Move para cima, bateu no lado de baixo da parede
                     self.rect.top = wall.rect.bottom
 
         self.steps -= 1

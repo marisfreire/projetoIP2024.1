@@ -22,15 +22,18 @@ mapa = ["00000000400000000000000000000000",
         "01011111111111110000011111311110",
         "00000000000000000000011000000000"]
 
-#Função que determina se houve ou não uma colisão entre o player e algum inimigo
+
+# Função que determina se houve ou não uma colisão entre o player e algum inimigo
 def check_collision(player, monster):
     return player[0].rect.colliderect(monster.rect)
 
-#Função que desenha as paredes do jogo
+
+# Função que desenha as paredes do jogo
 class Wall(object):
     def __init__(self, pos):
         self.rect = py.Rect(pos[0], pos[1], 40, 40)
         self.image = py.image.load('wall.png')
+
 
 class Jogo:
     def __init__(self):
@@ -38,14 +41,14 @@ class Jogo:
         py.init()
         self.tela = py.display.set_mode((largura, altura))  # tamanho da tela
         self.nome_oficial = 'CinEncontre'
-        self.nome = py.display.set_caption(self.nome_oficial)
+        py.display.set_caption(self.nome_oficial)
         self.clock = py.time.Clock()
 
     def mostrar_tela(self, walls, player, monsters):
-        #Loop principal do jogo
+        # Loop principal do jogo
         while True:
             key = py.key.get_pressed()
-            
+
             if key[py.K_LEFT]:
                 player[0].move(-2, 0)
             if key[py.K_RIGHT]:
@@ -59,10 +62,10 @@ class Jogo:
                     py.quit()
 
             # Desenho dos elementos: paredes, jogador e inimigos
-            background = py.image.load('mapa_cincontre.png')            
+            background = py.image.load('mapa_cincontre.png')
             self.tela.fill('white')
-            self.tela.blit(background, (0,0))
-            
+            self.tela.blit(background, (0, 100))
+
             # Player e uma lista de objetos Player()
             for jog in player:
                 py.draw.rect(self.tela, 'purple', jog.rect)
@@ -70,18 +73,19 @@ class Jogo:
             # Walls e uma lista de objetos Wall()
             for wall in walls:
                 self.tela.blit(wall.image, wall.rect)
-            
+
             # Monsters e uma lista de objetos Monster()
             for monster in monsters:
                 py.draw.rect(self.tela, 'blue', monster.rect)
                 monster.move()
-                if check_collision(player, monster): #Detecta as colisões entre os inimigos e os players
+                if check_collision(player, monster):  # Detecta as colisões entre os inimigos e os players
                     print("Game Over")
                     return False
-            
+
             py.display.update()
 
             self.clock.tick(FPS)
+
 
 def mapa_jogo(mapa):
     walls = []
@@ -89,7 +93,8 @@ def mapa_jogo(mapa):
     monsters = []
 
     # Análise da sequência de nível acima. 0 = parede, 3 = inimigo, 4 = player
-    x = y = 0
+    x = 0
+    y = 100
     for row in mapa:
         for col in row:
             col = int(col)
@@ -103,6 +108,7 @@ def mapa_jogo(mapa):
         y += 40
         x = 0
     return walls, player, monsters
+
 
 walls, player, monsters = mapa_jogo(mapa)
 

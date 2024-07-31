@@ -3,11 +3,11 @@ import pygame
 
 class Player(object):
     def __init__(self, pos):
-        self.rect = pygame.Rect(pos[0], pos[1], 30, 30) #x-axis, y-axis, width, height
+        self.rect = pygame.Rect(pos[0], pos[1], 30, 30).move(5, 5)  # X , Y , Largura, Altura
         self.image = pygame.image.load('Letter.png')
 
     def move(self, dx, dy):
-        #Move each axis separately. NB this checks for collisions both times
+        # Move cada eixo separadamente
         if dx != 0:
             self.move_single_axis(dx, 0)
         if dy != 0:
@@ -15,18 +15,18 @@ class Player(object):
 
     def move_single_axis(self, dx, dy):
         from main import walls
-        #Move the rect
+        # Mover o retângulo
         self.rect.x += dx * 10
         self.rect.y += dy * 10
 
-        #If you collide with a wall, move out based on velocity
+        # Se você colide com uma parede, você muda de direção
         for wall in walls:
             if self.rect.colliderect(wall.rect):
-                if dx > 0: #Moving right, hit the left side of wall
+                if dx > 0:  # Move pra direita, bateu no lado esquerdo da parede
                     self.rect.right = wall.rect.left
-                if dx < 0: #Moving left, hit the right side of wall
+                if dx < 0:  # Move para esquerda, bateu no lado direito da parede
                     self.rect.left = wall.rect.right
-                if dy > 0: #Moving down, hit the top side of wall
+                if dy > 0:  # Move para baixo, bateu no lado de cima da parede
                     self.rect.bottom = wall.rect.top
-                if dy < 0: #Moving up, hit the bottom side of wall
+                if dy < 0:  # Move para cima, bateu no lado de baixo da parede
                     self.rect.top = wall.rect.bottom
