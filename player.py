@@ -4,7 +4,7 @@ import pygame
 class Player(object):
     def __init__(self, pos):
         self.rect = pygame.Rect(pos[0], pos[1], 30, 30).move(5, 5)  # X , Y , Largura, Altura
-        self.image = pygame.image.load('Letter.png')
+        self.image = pygame.image.load('')
 
     def move(self, dx, dy):
         # Move cada eixo separadamente

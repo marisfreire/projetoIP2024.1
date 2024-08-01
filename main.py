@@ -1,3 +1,4 @@
+import pygame
 import pygame as py
 from config import *
 from player import *
@@ -38,29 +39,40 @@ class Wall(object):
 class Jogo:
     def __init__(self):
         # Setup geral do jogo
+        self.fonte = None
         py.init()
         self.tela = py.display.set_mode((largura, altura))  # tamanho da tela
         self.nome_oficial = 'CinEncontre'
         py.display.set_caption(self.nome_oficial)
         self.clock = py.time.Clock()
 
-    def mostrar_tela(self, walls, player, monsters):
-        # Loop principal do jogo
+        self.clock.tick(FPS)
+
+    def mensagem_tela(self, mensagem, pos_x, pos_y, cor, tam_fonte):
+        self.fonte = pygame.font.Font(fonte_file, tam_fonte)
+        msg = self.fonte.render(f'{mensagem}', True, cor)
+        msg_rect = msg.get_rect(topleft=(pos_x, pos_y))
+        self.tela.blit(msg, msg_rect)
+
+    def menu(self, lista_walls, lista_player, lista_monsters):
+        # Loop do jogo
         while True:
             key = py.key.get_pressed()
+            self.tela.fill('white')
+            self.mensagem_tela('CINCONTRE', 375, 20, 'Black', 100)
 
-            if key[py.K_LEFT]:
-                player[0].move(-2, 0)
-            if key[py.K_RIGHT]:
-                player[0].move(2, 0)
-            if key[py.K_UP] and player[0].rect.top > 120:
-                player[0].move(0, -2)
-            if key[py.K_DOWN]and player[0].rect.bottom < 770:
-                player[0].move(0, 2)
+            self.mensagem_tela('Pressione ENTER para jogar', 150, 500, black, 70)
+            pygame.display.update()
+
+            if key[py.K_RETURN]:
+                self.play(lista_walls, lista_player, lista_monsters)
+
             for event in py.event.get():
                 if event.type == py.QUIT or key[py.K_ESCAPE]:
-                    py.quit()
+                    quit()
 
+    def play(self, lista_walls, lista_player, lista_monsters):
+        while True:
             # Desenho dos elementos: paredes, jogador e inimigos
             background = py.image.load('mapa_cincontre.png')
             self.tela.fill('white')
@@ -79,12 +91,34 @@ class Jogo:
                 py.draw.rect(self.tela, 'blue', monster.rect)
                 monster.move()
                 if check_collision(player, monster):  # Detecta as colisões entre os inimigos e os players
-                    print("Game Over")
-                    return False
+                    self.derrota()
 
-            py.display.update()
+            key = py.key.get_pressed()
+            if key[py.K_LEFT] or key[py.K_a]:
+                player[0].move(-2, 0)
+            if key[py.K_RIGHT] or key[py.K_d]:
+                player[0].move(2, 0)
+            if (key[py.K_UP] or key[py.K_w]) and player[0].rect.top > 120:
+                player[0].move(0, -2)
+            if (key[py.K_DOWN] or key[py.K_s]) and player[0].rect.bottom < 770:
+                player[0].move(0, 2)
 
-            self.clock.tick(FPS)
+            for event in py.event.get():
+                if event.type == py.QUIT or key[py.K_ESCAPE]:
+                    quit()
+            pygame.display.update()
+
+    def derrota(self):
+        # tela de derrota
+        while True:
+            self.tela.fill(black)
+            self.mensagem_tela("game over", 100, 300, white, 200)
+
+            key = py.key.get_pressed()
+            for event in py.event.get():
+                if event.type == py.QUIT or key[py.K_ESCAPE]:
+                    quit()
+            pygame.display.update()
 
 
 def mapa_jogo(mapa):
@@ -114,4 +148,4 @@ walls, player, monsters = mapa_jogo(mapa)
 
 if __name__ == '__main__':  # jogo só será iniciado a partir do arquivo main
     jogo = Jogo()
-    jogo.mostrar_tela(walls, player, monsters)
+    jogo.menu(walls, player, monsters)
