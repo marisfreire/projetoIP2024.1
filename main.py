@@ -53,9 +53,9 @@ class Jogo:
                 player[0].move(-2, 0)
             if key[py.K_RIGHT]:
                 player[0].move(2, 0)
-            if key[py.K_UP]:
+            if key[py.K_UP] and player[0].rect.top > 120:
                 player[0].move(0, -2)
-            if key[py.K_DOWN]:
+            if key[py.K_DOWN]and player[0].rect.bottom < 770:
                 player[0].move(0, 2)
             for event in py.event.get():
                 if event.type == py.QUIT or key[py.K_ESCAPE]:

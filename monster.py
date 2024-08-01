@@ -15,6 +15,14 @@ class Monster(object):
         self.rect.x += dx
         self.rect.y += dy
 
+        # Limitar a saída do monstro da tela
+        if self.rect.top < 120:
+            self.rect.top = 120
+            self.direction = random.randint(0, 3)
+        if self.rect.bottom > 770:
+            self.rect.bottom = 770
+            self.direction = random.randint(0, 3)
+
         # Colide com a parede, move pro outro lado aleatório
         collide = False
         from main import walls
