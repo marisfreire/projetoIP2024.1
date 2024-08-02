@@ -4,24 +4,24 @@ from config import *
 from player import *
 from monster import *
 
-mapa = ["00000000400000000000000000000000",
-        "01111110100011011101101111010110",
-        "00010010111111111101101000010110",
-        "01110010100000000111101000010100",
-        "01111110101111100111111011111110",
-        "01000110111111110000111000010000",
-        "01101110101111111110101111311110",
-        "00001010101111111010100000000010",
-        "01111011101111100010101111111110",
-        "00000000101131111010101000010010",
-        "00000000101111111110111111111110",
-        "01111100100000000110100111000010",
-        "01001100111111111111110111111110",
-        "01001111100100111111110100001110",
-        "01111001100100111111110111111110",
-        "01011001100100111111110110000010",
-        "01011111111111110000011111311110",
-        "00000000000000000000011000000000"]
+mapa = [".000000040000000000000000000000.",
+        "01111112100011111121121111212110",
+        "07717712111111111121121211212110",
+        "01118812122222222111121222212120",
+        "01111112121111122111111211111110",
+        "01777112111111112222111222212220",
+        "01191112121111111112121111311110",
+        "08881612121111111212122222222210",
+        "01111611121111122212121111111110",
+        "02222222121131111212121222212210",
+        "02222222121111111112111111111110",
+        "01111122122222222112122111222210",
+        "01001122111111111111112111111110",
+        "01001111122122111111112122221110",
+        "01111001122122111111112111111110",
+        "01211001122122111111112112222210",
+        "01211111111111112222211111311110",
+        ".000000000000000000001100000000."]
 
 
 # Função que determina se houve ou não uma colisão entre o player e algum inimigo
@@ -31,9 +31,29 @@ def check_collision(player, monster):
 
 # Função que desenha as paredes do jogo
 class Wall(object):
-    def __init__(self, pos):
+    def __init__(self, pos, wall_type):
         self.rect = py.Rect(pos[0], pos[1], 40, 40)
-        self.image = py.image.load('wall.png')
+        if wall_type == "0":
+            self.image = py.image.load('wall.png')
+        elif wall_type == "2":
+            self.image = py.Surface((40, 40))
+            self.image.fill((80, 76, 76))
+        elif wall_type == ".":
+            self.image = py.image.load('imagens_pixel/image.png')
+        elif wall_type == "6":
+            self.image = py.image.load('imagens_pixel/pc left.png')
+        elif wall_type == "7":
+            self.image = py.image.load('imagens_pixel/pc front.png')
+        elif wall_type == "8":
+            self.image = py.image.load('imagens_pixel/pc back.png')
+        elif wall_type == "9":
+            self.image = py.image.load('imagens_pixel/pc right.png')
+        else:
+            self.image = None
+
+    def draw(self, surface):
+        if self.image:
+            surface.blit(self.image, self.rect)
 
 
 dano = []
@@ -239,12 +259,11 @@ def mapa_jogo(mapa, x=0, y=100):
     # Análise da sequência de nível acima. 0 = parede, 3 = inimigo, 4 = player
     for row in mapa:
         for col in row:
-            col = int(col)
-            if col == 0:
-                walls.append(Wall((x, y)))
-            if col == 4:
+            if col in ['0','2','6','7','8','9','.']:
+                walls.append(Wall((x, y), col))
+            if col == '4':
                 player.append(Player((x, y)))
-            if col == 3:
+            if col == '3':
                 monsters.append(Monster((x, y)))
             x += 40
         y += 40
