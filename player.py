@@ -16,8 +16,8 @@ class Player(object):
     def move_single_axis(self, dx, dy):
         from main import walls
         # Mover o retângulo
-        self.rect.x += dx * 10
-        self.rect.y += dy * 10
+        self.rect.x += dx * 5
+        self.rect.y += dy * 5
 
         # Se você colide com uma parede, você muda de direção
         for wall in walls:
