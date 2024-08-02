@@ -22,6 +22,8 @@ mapa = ["00000000400000000000000000000000",
         "01011111111111110000011111311110",
         "00000000000000000000011000000000"]
 
+lista_dano = []
+morreu = []
 
 # Função que determina se houve ou não uma colisão entre o player e algum inimigo
 def check_collision(player, monster):
@@ -45,6 +47,7 @@ class Jogo:
         self.clock = py.time.Clock()
 
     def mostrar_tela(self, walls, player, monsters):
+        invincible_timer = 0  # Inicializa o temporizador de invencibilidade
         # Loop principal do jogo
         while True:
             key = py.key.get_pressed()
@@ -60,6 +63,10 @@ class Jogo:
             for event in py.event.get():
                 if event.type == py.QUIT or key[py.K_ESCAPE]:
                     py.quit()
+            
+            # Atualiza o temporizador de invencibilidade
+            if invincible_timer > 0:
+                invincible_timer -= 1
 
             # Desenho dos elementos: paredes, jogador e inimigos
             background = py.image.load('mapa_cincontre.png')
@@ -78,9 +85,13 @@ class Jogo:
             for monster in monsters:
                 py.draw.rect(self.tela, 'blue', monster.rect)
                 monster.move()
-                if check_collision(player, monster):  # Detecta as colisões entre os inimigos e os players
-                    print("Game Over")
-                    return False
+                if check_collision(player, monster) and invincible_timer == 0:
+                    lista_dano.append("dano")
+                    invincible_timer = 60  # Definindo invencibilidade para 1 segundo (60 frames)
+                    if len(lista_dano) == 3:
+                        print("Game Over")
+                        morreu.append("morte")
+                        return False
 
             py.display.update()
 
