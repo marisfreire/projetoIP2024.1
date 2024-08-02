@@ -38,6 +38,7 @@ class Wall(object):
 
 dano = []
 morreu = False
+lista_imagens = ['heart.png', 'heart.png', 'heart.png']
 
 class Jogo:
     def __init__(self):
@@ -89,6 +90,16 @@ class Jogo:
             self.tela.fill('white')
             self.tela.blit(background, (0, 100))
 
+            xaxis = 0
+            image = 0
+            for i in range(3):
+                self.rect = py.Rect(40 + xaxis, 20, 40, 40)
+                self.image = py.image.load(lista_imagens[image])
+                self.tela.blit(self.image, self.rect)
+                image += 1
+                xaxis += 40
+
+
             # Player e uma lista de objetos Player()
             for jog in player:
                 py.draw.rect(self.tela, 'purple', jog.rect)
@@ -104,6 +115,29 @@ class Jogo:
                 if check_collision(player, monster) and invincible_timer == 0:  # Detecta as colisões entre os inimigos e os players
                     dano.append('dano')
                     invincible_timer = 30 # 60 frames = 1 segundo de invicibilidade
+                    if len(dano) == 1:
+                        xaxis = 0
+                        image = 0
+                        lista_imagens[2] = 'damage.png'
+                        for i in range(3):
+                            self.rect = py.Rect(40 + xaxis, 20, 40, 40)
+                            self.image = py.image.load(lista_imagens[image])
+                            self.tela.blit(self.image, self.rect)
+                            xaxis += 40
+                            image += 1
+                    elif len(dano) == 2:
+                        xaxis = 0
+                        image = 0
+                        lista_imagens[1] = 'damage.png'
+                        for i in range(3):
+                            self.rect = py.Rect(40 + xaxis, 20, 40, 40)
+                            self.image = py.image.load(lista_imagens[image])
+                            self.tela.blit(self.image, self.rect)
+                            xaxis += 40
+                            image += 1
+
+        
+
                     if len(dano) == 3:
                         self.morreu = True
                         self.derrota(lista_walls, lista_player, lista_monsters)
