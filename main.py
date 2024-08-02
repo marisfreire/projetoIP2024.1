@@ -3,7 +3,7 @@ import pygame as py
 from config import *
 from player import *
 from monster import *
-
+from coletaveis_teste import *
 mapa = [".000000040000000000000000000000.",
         "01111112100011111121121111212110",
         "07717712111111111121121211212110",
