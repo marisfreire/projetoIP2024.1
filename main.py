@@ -80,10 +80,16 @@ class Jogo:
 
     def play(self, lista_walls, lista_player, lista_monsters):
         invincible_timer = 0  # Inicializa o temporizador de invencibilidade
+        seg = 45 * 60
+        time_seg = 45
+        lista_imagens = ['heart.png', 'heart.png', 'heart.png']
         while True:
             # Atualiza o temporizador de invencibilidade
             if invincible_timer > 0:
                 invincible_timer -= 1
+            
+            if seg > 0:
+                seg -= 1
 
             # Desenho dos elementos: paredes, jogador e inimigos
             background = py.image.load('mapa_cincontre.png')
@@ -93,12 +99,25 @@ class Jogo:
             xaxis = 0
             image = 0
             for i in range(3):
-                self.rect = py.Rect(40 + xaxis, 20, 40, 40)
+                self.rect = py.Rect(40 + xaxis, 40, 40, 40)
                 self.image = py.image.load(lista_imagens[image])
                 self.tela.blit(self.image, self.rect)
                 image += 1
                 xaxis += 40
 
+            
+            if seg % 60 == 0: # Significa que passaram-se 60 frames, ou seja, um segundo
+                time_seg -= 1
+            
+            if time_seg < 10:
+                text_timer = self.fonte.render(f'00:0{time_seg}', True, black)
+            else:
+                text_timer = self.fonte.render(f'00:{time_seg}', True, black)          
+            timer_rect = text_timer.get_rect(topleft=(800,30))
+            self.tela.blit(text_timer, timer_rect)
+
+            if time_seg == 0:
+                self.derrota(lista_walls, lista_player, lista_monsters)
 
             # Player e uma lista de objetos Player()
             for jog in player:
