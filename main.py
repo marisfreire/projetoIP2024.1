@@ -36,6 +36,14 @@ class Wall(object):
         self.rect = py.Rect(pos[0], pos[1], 40, 40)
         self.image = py.image.load('wall.png')
 
+class Hearts(object):
+    def __init__(self):
+        xaxis = 0
+        for i in range(3):
+            self.rect = py.Rect(60 + xaxis, 30, 40, 40)
+            self.image = py.image.load('heart.png')
+            self.tela.blit(self.image, self.rect)
+            xaxis += 60
 
 class Jogo:
     def __init__(self):
@@ -72,6 +80,13 @@ class Jogo:
             background = py.image.load('mapa_cincontre.png')
             self.tela.fill('white')
             self.tela.blit(background, (0, 100))
+
+            xaxis = 0
+            for i in range(3):
+                self.rect = py.Rect(40 + xaxis, 20, 40, 40)
+                self.image = py.image.load('heart.png')
+                self.tela.blit(self.image, self.rect)
+                xaxis += 40
 
             # Player e uma lista de objetos Player()
             for jog in player:
