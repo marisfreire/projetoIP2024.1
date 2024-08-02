@@ -16,7 +16,7 @@ mapa = [".000000040000000000000000000000.",
         "01191112121111111112121111311110",
         "08881612121111111212122222222210",
         "01111611121111122212121111111110",
-        "02222221121131111212121222212210",
+        "02222222121131111212121222212210",
         "022222221211111#1112111111111110",
         "01111122122222222112122111222210",
         "01001122111111111111112111111110",
@@ -50,7 +50,7 @@ class Jogo:
         msg_rect = msg.get_rect(topleft=(pos_x, pos_y))
         self.tela.blit(msg, msg_rect)
 
-    def menu(self, lista_walls, lista_player, lista_monsters):
+    def menu(self, lista_walls, lista_player, lista_monsters, lista_cafe, lista_pasta):
         # Loop do jogo
         while True:
             key = py.key.get_pressed()
