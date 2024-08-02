@@ -3,6 +3,7 @@ import pygame as py
 from config import *
 from player import *
 from monster import *
+from wall import *
 
 mapa = [".000000040000000000000000000000.",
         "01111112100011111121121111212110",
@@ -32,31 +33,7 @@ def check_collision(player, monster):
     return player[0].rect.colliderect(monster.rect)
 
 
-# Função que desenha as paredes do jogo
-class Wall(object):
-    def __init__(self, pos, wall_type):
-        self.rect = py.Rect(pos[0], pos[1], 40, 40)
-        if wall_type == "0":
-            self.image = py.image.load('wall.png')
-        elif wall_type == "2":
-            self.image = py.Surface((40, 40))
-            self.image.fill((80, 76, 76))
-        elif wall_type == ".":
-            self.image = py.image.load('imagens_pixel/image.png')
-        elif wall_type == "6":
-            self.image = py.image.load('imagens_pixel/pc left.png')
-        elif wall_type == "7":
-            self.image = py.image.load('imagens_pixel/pc front.png')
-        elif wall_type == "8":
-            self.image = py.image.load('imagens_pixel/pc back.png')
-        elif wall_type == "9":
-            self.image = py.image.load('imagens_pixel/pc right.png')
-        else:
-            self.image = None
 
-    def draw(self, surface):
-        if self.image:
-            surface.blit(self.image, self.rect)
 
 
 dano = []
@@ -71,8 +48,8 @@ class Jogo:
         self.tela = py.display.set_mode((largura, altura))  # tamanho da tela
         self.nome_oficial = 'CinEncontre'
         py.display.set_caption(self.nome_oficial)
-        self.clock = py.time.Clock()
 
+        self.clock = py.time.Clock()
         self.clock.tick(FPS)
 
     def mensagem_tela(self, mensagem, pos_x, pos_y, cor, tam_fonte):
@@ -82,9 +59,6 @@ class Jogo:
         self.tela.blit(msg, msg_rect)
 
     def menu(self, lista_walls, lista_player, lista_monsters):
-        # Reiniciando variáveis
-        global morreu
-        morreu = False # Reiniciando
         # Loop do jogo
         while True:
             key = py.key.get_pressed()
@@ -106,6 +80,8 @@ class Jogo:
         seg = 45 * 60
         time_seg = 45
         lista_imagens = ['heart.png', 'heart.png', 'heart.png']
+   
+
         while True:
             # Atualiza o temporizador de invencibilidade
             if invincible_timer > 0:
@@ -178,10 +154,7 @@ class Jogo:
                             xaxis += 40
                             image += 1
 
-        
-
                     if len(dano) == 3:
-                        self.morreu = True
                         self.derrota(lista_walls, lista_player, lista_monsters)
                         
 
@@ -229,8 +202,8 @@ class Jogo:
             # Desenhar o retângulo verde diretamente na tela
             reinicio_button = pygame.draw.rect(self.tela, '#307225', (280, 480, 250, 100))
             #fonte = pygame.font.Font(None, 30)
-            #reinicio_text = fonte.render(f'{'PLAY AGAIN'}',True,'red')
-            #self.tela.blit(reinicio_text, reinicio_button)
+            reinicio_text = self.fonte.render(f'{'PLAY AGAIN'}',True,'red')
+            self.tela.blit(reinicio_text, reinicio_button)
 
 
             tela_inicial_button = pygame.draw.rect(self.tela, '#a93535', (750, 480, 250, 100)) #(x,y (do canto superior do retangulo), width, height)
@@ -244,12 +217,12 @@ class Jogo:
                     
             self.mensagem_tela(
                 'Poxaaa...Infelizmente você perdeu seu crachá',
-                640, 270, 'White', 40
+                240, 270, 'White', 40
             )
 
             self.mensagem_tela(
                 'Pressione ENTER para reiniciar ou ESC para sair',
-                640, 400, 'White', 30
+                240, 400, 'White', 30
             )
             pygame.display.update()
 
