@@ -24,6 +24,7 @@ mapa = ["00000000400000000000000000000000",
 
 lista_dano = []
 morreu = []
+lista_imagens = ['heart.png', 'heart.png', 'heart.png']
 
 # Função que determina se houve ou não uma colisão entre o player e algum inimigo
 def check_collision(player, monster):
@@ -81,11 +82,14 @@ class Jogo:
             self.tela.fill('white')
             self.tela.blit(background, (0, 100))
 
+            # Desenho dos corações
             xaxis = 0
+            image = 0
             for i in range(3):
                 self.rect = py.Rect(40 + xaxis, 20, 40, 40)
-                self.image = py.image.load('heart.png')
+                self.image = py.image.load(lista_imagens[image])
                 self.tela.blit(self.image, self.rect)
+                image += 1
                 xaxis += 40
 
             # Player e uma lista de objetos Player()
@@ -103,6 +107,29 @@ class Jogo:
                 if check_collision(player, monster) and invincible_timer == 0:
                     lista_dano.append("dano")
                     invincible_timer = 60  # Definindo invencibilidade para 1 segundo (60 frames)
+                    
+                    if len(lista_dano) == 1:
+                        xaxis = 0
+                        image = 0
+                        lista_imagens[2] = 'damage.png'
+                        for i in range(3):
+                            self.rect = py.Rect(40 + xaxis, 20, 40, 40)
+                            self.image = py.image.load(lista_imagens[image])
+                            self.tela.blit(self.image, self.rect)
+                            xaxis += 40
+                            image += 1
+
+                    elif len(lista_dano) == 2:
+                        xaxis = 0
+                        image = 0
+                        lista_imagens[1] = 'damage.png'
+                        for i in range(3):
+                            self.rect = py.Rect(40 + xaxis, 20, 40, 40)
+                            self.image = py.image.load(lista_imagens[image])
+                            self.tela.blit(self.image, self.rect)
+                            xaxis += 40
+                            image += 1
+
                     if len(lista_dano) == 3:
                         print("Game Over")
                         morreu.append("morte")
