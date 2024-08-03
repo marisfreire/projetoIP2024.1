@@ -200,7 +200,7 @@ class Jogo:
                     quit()
             pygame.display.update()
 
-    def derrota(self, lista_walls, lista_player, lista_monsters, lista_cafe, lista_pasta):
+    def derrota(self, lista_walls, lista_player, lista_monsters):
         # tela de derrota
         while True:
             for event in py.event.get():
@@ -209,7 +209,7 @@ class Jogo:
                     
                 if event.type == py.KEYDOWN:
                     if event.key == py.K_RETURN:  # Reinicia o jogo ao pressionar Enter
-                        self.menu(lista_walls, lista_player, lista_monsters, lista_cafe, lista_pasta)
+                        self.menu(lista_walls, lista_player, lista_monsters)
                         # Sai da tela de derrota e retorna ao loop principal
                         #colocar para voltar para a tela inicial 
                     if event.key == py.K_ESCAPE:  # Sai do jogo ao pressionar Escape
@@ -225,34 +225,81 @@ class Jogo:
             background = py.Surface(self.tela.get_size())
             background.fill('black')
             self.tela.blit(background, (0, 0))
-
-            # Desenhar o retângulo verde diretamente na tela
-            reinicio_button = pygame.draw.rect(self.tela, '#307225', (280, 480, 250, 100))
-            #fonte = pygame.font.Font(None, 30)
-            reinicio_text = self.fonte.render(f'{'PLAY AGAIN'}',True,'red')
-            self.tela.blit(reinicio_text, reinicio_button)
-
-
-            tela_inicial_button = pygame.draw.rect(self.tela, '#a93535', (750, 480, 250, 100)) #(x,y (do canto superior do retangulo), width, height)
-            #fonte = pygame.font.Font(None, 30)
-            #tela_inicial_text = fonte.render(f'{'TELA INICIAL'}',True,'green')
-            #self.tela.blit(tela_inicial_text, tela_inicial_button)
-
+       #bootões na tela
+            reinicio_button = py.draw.rect(self.tela, '#307225', (300, 480, 250, 100)) # verde
+            reinicio_text = self.fonte.render('JOGAR', True, 'black')
+            self.tela.blit(reinicio_text, (365 + 10, 475 + 30))  
+            reinicio_text = self.fonte.render('NOVAMENTE', True, 'black')
+            self.tela.blit(reinicio_text, (330 + 10, 500 + 30))
+            sair_button = py.draw.rect(self.tela, '#a93535', (750, 480, 250, 100)) #vermelho
+            sair_text = self.fonte.render('SAIR', True, 'black')
+            self.tela.blit(sair_text, (835 + 10, 488 + 30))  
         
             # Título
             self.mensagem_tela('GAME OVER', 375, 120, '#ffffff', 100)
                     
             self.mensagem_tela(
                 'Poxaaa...Infelizmente você perdeu seu crachá',
-                240, 270, 'White', 40
+                200, 270, 'White', 40
             )
 
             self.mensagem_tela(
                 'Pressione ENTER para reiniciar ou ESC para sair',
-                240, 400, 'White', 30
+                275, 390, 'White', 30
             )
             pygame.display.update()
 
+        #tela de vitoria
+    def vitoria(self, lista_walls, lista_player, lista_monsters):
+            while True:
+                for event in py.event.get():
+                    if event.type == py.QUIT:
+                        py.quit()
+                        quit()
+                        
+                    if event.type == py.KEYDOWN:
+                        if event.key == py.K_RETURN:  
+                            self.menu(lista_walls, lista_player, lista_monsters)
+                            return  
+                        if event.key == py.K_ESCAPE: 
+                            py.quit()
+                            quit()
+                            
+                    if event.type == py.MOUSEBUTTONDOWN:
+                        if reinicio_button.collidepoint(event.pos):
+                            self.menu(lista_walls, lista_player, lista_monsters)
+                            return
+                        if sair_button.collidepoint(event.pos):
+                            py.quit()
+                            quit()
+                # Imagem de fundo
+                background = py.image.load("mapa_cincontre.png")
+                background = py.transform.scale(background, (1280,820))
+                self.tela.blit(background, (0, 0))
+                # Criar uma superfície preta com a mesma dimensão da tela
+                escurecimento = py.Surface((1280, 820))
+                escurecimento.fill((0, 0, 0))  # Preto
+                escurecimento.set_alpha(200)   # 0 é totalmente transparente, 255 é totalmente opaco
+                # Desenhar a camada de escurecimento sobre a imagem
+                self.tela.blit(escurecimento, (0, 0))
+                # Desenhar os botões
+                reinicio_button = py.draw.rect(self.tela, '#307225', (300, 480, 250, 100)) # verde
+                reinicio_text = self.fonte.render('JOGAR', True, 'black')
+                self.tela.blit(reinicio_text, (365 + 10, 475 + 30))  
+                reinicio_text = self.fonte.render('NOVAMENTE', True, 'black')
+                self.tela.blit(reinicio_text, (330 + 10, 500 + 30))
+                sair_button = py.draw.rect(self.tela, '#a93535', (750, 480, 250, 100)) #vermelho
+                sair_text = self.fonte.render('SAIR', True, 'black')
+                self.tela.blit(sair_text, (835 + 10, 488 + 30)) 
+                # Títulos e mensagens
+                self.mensagem_tela('Você Venceu', 365, 120, '#ffffff', 100)
+                self.mensagem_tela('Parabéns!!',530, 270, 'red', 40)
+                self.mensagem_tela('Você obteve todas as peças do Quebra-Cabeça.',140, 300, 'red', 40)
+                self.mensagem_tela(
+                    'Pressione ENTER para jogar novamente ou ESC para sair',
+                    190, 390, 'white', 30
+                )
+                py.display.update()
 
 def mapa_jogo(mapa, x=0, y=100):
     walls = []
