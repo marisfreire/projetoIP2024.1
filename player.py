@@ -3,8 +3,13 @@ import pygame
 
 class Player(object):
     def __init__(self, pos):
+        self.initial_position = pos  # Armazena a posição inicial
         self.rect = pygame.Rect(pos[0], pos[1], 30, 30).move(5, 5)  # X , Y , Largura, Altura
        # self.image = pygame.image.load('')
+
+    def reset_position(self):
+        # Redefine a posição do jogador para a posição inicial
+        self.rect.topleft = self.initial_position
 
     def move(self, dx, dy):
         # Move cada eixo separadamente

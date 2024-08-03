@@ -72,6 +72,8 @@ class Jogo:
         seg = 45 * 60
         time_seg = 45
         lista_imagens = ['heart.png', 'heart.png', 'heart.png']
+        dano.clear()  # Limpa a lista de danos para reiniciar as vidas
+        lista_player[0].reset_position()  # Implementar o método reset_position() na classe Player
    
 
         while True:
@@ -217,9 +219,10 @@ class Jogo:
                         
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     if reinicio_button.collidepoint(event.pos):
-                            self.menu(lista_walls, lista_player, lista_monsters)
-                    if tela_inicial_button.collidepoint(event.pos):
-                            quit()
+                        self.menu(walls, player, monsters, cafe, pasta)
+                        return  # Sai da função derrota
+                    if sair_button.collidepoint(event.pos):
+                        quit()
 
             # Imagem de fundo
             background = py.Surface(self.tela.get_size())
