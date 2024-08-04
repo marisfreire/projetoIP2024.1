@@ -6,6 +6,7 @@ from monster import *
 from coletaveis import *
 from collision import check_collision
 from wall import *
+from fade import fade
 
 mapa = [".000000040000000000000000000000.",
         "01111112100011111121121111212110",
@@ -26,11 +27,10 @@ mapa = [".000000040000000000000000000000.",
         "0121#111111111112222211111311110",
         ".000000000000000000001100000000."]
 
-
-
 dano = []
 morreu = False
 lista_imagens = ['heart.png', 'heart.png', 'heart.png']
+qtde_coletaveis = {"cafe": 4, "pasta": 4, "vida": 1}
 
 class Jogo:
     def __init__(self):
@@ -74,13 +74,12 @@ class Jogo:
         lista_imagens = ['heart.png', 'heart.png', 'heart.png']
         dano.clear()  # Limpa a lista de danos para reiniciar as vidas
         lista_player[0].reset_position()  # Implementar o método reset_position() na classe Player
-   
 
         while True:
             # Atualiza o temporizador de invencibilidade
             if invincible_timer > 0:
                 invincible_timer -= 1
-            
+
             if seg > 0:
                 seg -= 1
 
@@ -98,15 +97,14 @@ class Jogo:
                 image += 1
                 xaxis += 40
 
-            
-            if seg % 60 == 0: # Significa que passaram-se 60 frames, ou seja, um segundo
+            if seg % 60 == 0:  # Significa que passaram-se 60 frames, ou seja, um segundo
                 time_seg -= 1
-            
+
             if time_seg < 10:
                 text_timer = self.fonte.render(f'00:0{time_seg}', True, black)
             else:
-                text_timer = self.fonte.render(f'00:{time_seg}', True, black)          
-            timer_rect = text_timer.get_rect(topleft=(800,30))
+                text_timer = self.fonte.render(f'00:{time_seg}', True, black)
+            timer_rect = text_timer.get_rect(topleft=(800, 30))
             self.tela.blit(text_timer, timer_rect)
 
             if time_seg == 0:
@@ -122,36 +120,30 @@ class Jogo:
             for wall in walls:
                 self.tela.blit(wall.image, wall.rect)
 
-            # Desenho dos cafes
-            
-            for elemento in lista_cafe:
-                
-                if check_collision(elemento, player[0]):
-                    elemento.coletado = True
-                    if elemento.coletaveis['cafe'] > 0:
-                        lista_cafe.append(elemento.randomizar())
-                        elemento.decrease('cafe')
-                    # Aumentar a velocidade do player quando é coletado
-                
-                if not elemento.coletado:
-                    self.tela.blit(elemento.image, elemento.rect)
+            def novos_coletaveis(lista_coletaveis, item):
+                novos_itens = []
+                for e in lista_coletaveis:
+                    if check_collision(e, player[0]):
+                        if not e.coletado:
+                            e.coletado = True
+                            if qtde_coletaveis[item] > 0:
+                                qtde_coletaveis[item] -= 1
+                                novos_itens.append(e.randomizar())  # Adiciona novo item à lista temporária
 
+                    if not e.coletado and qtde_coletaveis[item] > 0:
+                        self.tela.blit(e.image, e.rect)
 
-            for elemento in lista_pasta:
+                # Adicionar novos itens à lista original
+                lista_coletaveis.extend(novos_itens)
 
-                if check_collision(elemento, player[0]):
-                    elemento.coletado = True
-                    if elemento.coletaveis['pasta'] > 0:
-                        lista_cafe.append(elemento.randomizar())
-                        elemento.decrease('pasta')
-                    # else:
-                       # vitoria()
-                
-                if not elemento.coletado:
-                    self.tela.blit(elemento.image, elemento.rect)
+                # Desenho dos cafés
 
+            novos_coletaveis(lista_cafe, 'cafe')
 
-
+            # Desenho das pastas
+            novos_coletaveis(lista_pasta, 'pasta')
+            if qtde_coletaveis['pasta'] == 0:
+                self.vitoria(lista_walls, lista_player, lista_monsters, lista_cafe, lista_pasta)
 
             # Monsters e uma lista de objetos Monster()
             for monster in monsters:
@@ -159,9 +151,10 @@ class Jogo:
                 # self.tela.blit(monster.image, monster.rect)
                 py.draw.rect(self.tela, 'blue', monster.rect)
                 monster.move()
-                if check_collision(player[0], monster) and invincible_timer == 0:  # Detecta as colisões entre os inimigos e os players
+                if check_collision(player[0],
+                                   monster) and invincible_timer == 0:  # Detecta as colisões entre os inimigos e os players
                     dano.append('dano')
-                    invincible_timer = 30 # 60 frames = 1 segundo de invicibilidade
+                    invincible_timer = 30  # 60 frames = 1 segundo de invicibilidade
                     if len(dano) == 1:
                         xaxis = 0
                         image = 0
@@ -185,7 +178,6 @@ class Jogo:
 
                     if len(dano) == 3:
                         self.derrota(lista_walls, lista_player, lista_monsters)
-                        
 
             key = py.key.get_pressed()
             if key[py.K_LEFT] or key[py.K_a]:
@@ -208,7 +200,7 @@ class Jogo:
             for event in py.event.get():
                 if event.type == py.QUIT:
                     quit()
-                    
+
                 if event.type == py.KEYDOWN:
                     if event.key == py.K_RETURN:  # Reinicia o jogo ao pressionar Enter
                         self.menu(lista_walls, lista_player, lista_monsters)
@@ -216,7 +208,7 @@ class Jogo:
                         #colocar para voltar para a tela inicial 
                     if event.key == py.K_ESCAPE:  # Sai do jogo ao pressionar Escape
                         quit()
-                        
+
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     if reinicio_button.collidepoint(event.pos):
                         self.menu(walls, player, monsters, cafe, pasta)
@@ -228,19 +220,19 @@ class Jogo:
             background = py.Surface(self.tela.get_size())
             background.fill('black')
             self.tela.blit(background, (0, 0))
-       #bootões na tela
-            reinicio_button = py.draw.rect(self.tela, '#307225', (300, 480, 250, 100)) # verde
+            #bootões na tela
+            reinicio_button = py.draw.rect(self.tela, '#307225', (300, 480, 250, 100))  # verde
             reinicio_text = self.fonte.render('JOGAR', True, 'black')
-            self.tela.blit(reinicio_text, (365 + 10, 475 + 30))  
+            self.tela.blit(reinicio_text, (365 + 10, 475 + 30))
             reinicio_text = self.fonte.render('NOVAMENTE', True, 'black')
             self.tela.blit(reinicio_text, (330 + 10, 500 + 30))
-            sair_button = py.draw.rect(self.tela, '#a93535', (750, 480, 250, 100)) #vermelho
+            sair_button = py.draw.rect(self.tela, '#a93535', (750, 480, 250, 100))  #vermelho
             sair_text = self.fonte.render('SAIR', True, 'black')
-            self.tela.blit(sair_text, (835 + 10, 488 + 30))  
-        
+            self.tela.blit(sair_text, (835 + 10, 488 + 30))
+
             # Título
             self.mensagem_tela('GAME OVER', 375, 120, '#ffffff', 100)
-                    
+
             self.mensagem_tela(
                 'Poxaaa...Infelizmente você perdeu seu crachá',
                 200, 270, 'White', 40
@@ -253,56 +245,58 @@ class Jogo:
             pygame.display.update()
 
         #tela de vitoria
-    def vitoria(self, lista_walls, lista_player, lista_monsters):
-            while True:
-                for event in py.event.get():
-                    if event.type == py.QUIT:
+
+    def vitoria(self, lista_walls, lista_player, lista_monsters, lista_cafe, lista_pasta):
+        while True:
+            for event in py.event.get():
+                if event.type == py.QUIT:
+                    py.quit()
+                    quit()
+
+                if event.type == py.KEYDOWN:
+                    if event.key == py.K_RETURN:
+                        self.menu(lista_walls, lista_player, lista_monsters, lista_cafe, lista_pasta)
+                        return
+                    if event.key == py.K_ESCAPE:
                         py.quit()
                         quit()
-                        
-                    if event.type == py.KEYDOWN:
-                        if event.key == py.K_RETURN:  
-                            self.menu(lista_walls, lista_player, lista_monsters)
-                            return  
-                        if event.key == py.K_ESCAPE: 
-                            py.quit()
-                            quit()
-                            
-                    if event.type == py.MOUSEBUTTONDOWN:
-                        if reinicio_button.collidepoint(event.pos):
-                            self.menu(lista_walls, lista_player, lista_monsters)
-                            return
-                        if sair_button.collidepoint(event.pos):
-                            py.quit()
-                            quit()
-                # Imagem de fundo
-                background = py.image.load("mapa_cincontre.png")
-                background = py.transform.scale(background, (1280,820))
-                self.tela.blit(background, (0, 0))
-                # Criar uma superfície preta com a mesma dimensão da tela
-                escurecimento = py.Surface((1280, 820))
-                escurecimento.fill((0, 0, 0))  # Preto
-                escurecimento.set_alpha(200)   # 0 é totalmente transparente, 255 é totalmente opaco
-                # Desenhar a camada de escurecimento sobre a imagem
-                self.tela.blit(escurecimento, (0, 0))
-                # Desenhar os botões
-                reinicio_button = py.draw.rect(self.tela, '#307225', (300, 480, 250, 100)) # verde
-                reinicio_text = self.fonte.render('JOGAR', True, 'black')
-                self.tela.blit(reinicio_text, (365 + 10, 475 + 30))  
-                reinicio_text = self.fonte.render('NOVAMENTE', True, 'black')
-                self.tela.blit(reinicio_text, (330 + 10, 500 + 30))
-                sair_button = py.draw.rect(self.tela, '#a93535', (750, 480, 250, 100)) #vermelho
-                sair_text = self.fonte.render('SAIR', True, 'black')
-                self.tela.blit(sair_text, (835 + 10, 488 + 30)) 
-                # Títulos e mensagens
-                self.mensagem_tela('Você Venceu', 365, 120, '#ffffff', 100)
-                self.mensagem_tela('Parabéns!!',530, 270, 'red', 40)
-                self.mensagem_tela('Você obteve todas as peças do Quebra-Cabeça.',140, 300, 'red', 40)
-                self.mensagem_tela(
-                    'Pressione ENTER para jogar novamente ou ESC para sair',
-                    190, 390, 'white', 30
-                )
-                py.display.update()
+
+                if event.type == py.MOUSEBUTTONDOWN:
+                    if reinicio_button.collidepoint(event.pos):
+                        self.menu(lista_walls, lista_player, lista_monsters, lista_cafe, lista_pasta)
+                        return
+                    if sair_button.collidepoint(event.pos):
+                        py.quit()
+                        quit()
+            # Imagem de fundo
+            background = py.image.load("mapa_cincontre.png")
+            background = py.transform.scale(background, (1280, 820))
+            self.tela.blit(background, (0, 0))
+            # Criar uma superfície preta com a mesma dimensão da tela
+            escurecimento = py.Surface((1280, 820))
+            escurecimento.fill((0, 0, 0))  # Preto
+            escurecimento.set_alpha(200)  # 0 é totalmente transparente, 255 é totalmente opaco
+            # Desenhar a camada de escurecimento sobre a imagem
+            self.tela.blit(escurecimento, (0, 0))
+            # Desenhar os botões
+            reinicio_button = py.draw.rect(self.tela, '#307225', (300, 480, 250, 100))  # verde
+            reinicio_text = self.fonte.render('JOGAR', True, 'black')
+            self.tela.blit(reinicio_text, (365 + 10, 475 + 30))
+            reinicio_text = self.fonte.render('NOVAMENTE', True, 'black')
+            self.tela.blit(reinicio_text, (330 + 10, 500 + 30))
+            sair_button = py.draw.rect(self.tela, '#a93535', (750, 480, 250, 100))  #vermelho
+            sair_text = self.fonte.render('SAIR', True, 'black')
+            self.tela.blit(sair_text, (835 + 10, 488 + 30))
+            # Títulos e mensagens
+            self.mensagem_tela('Você Venceu', 365, 120, '#ffffff', 100)
+            self.mensagem_tela('Parabéns!!', 530, 270, 'red', 40)
+            self.mensagem_tela('Você obteve todas as peças do Quebra-Cabeça.', 140, 300, 'red', 40)
+            self.mensagem_tela(
+                'Pressione ENTER para jogar novamente ou ESC para sair',
+                190, 390, 'white', 30
+            )
+            py.display.update()
+
 
 def mapa_jogo(mapa, x=0, y=100):
     walls = []
@@ -314,16 +308,16 @@ def mapa_jogo(mapa, x=0, y=100):
     # Análise da sequência de nível acima. 0 = parede, 3 = inimigo, 4 = player, # = cafe, , = pasta
     for row in mapa:
         for col in row:
-            if col in ['0','2','6','7','8','9','.']:
+            if col in ['0', '2', '6', '7', '8', '9', '.']:
                 walls.append(Wall((x, y), col))
             if col == '4':
                 player.append(Player((x, y)))
             if col == '3':
                 monsters.append(Monster((x, y)))
             if col == '#':
-                cafe.append(Coletaveis('cafe',(x,y)))
+                cafe.append(Coletaveis('cafe', (x, y)))
             if col == ',':
-                pasta.append(Coletaveis('pasta', (x,y)))
+                pasta.append(Coletaveis('pasta', (x, y)))
             x += 40
         y += 40
         x = 0
@@ -331,8 +325,6 @@ def mapa_jogo(mapa, x=0, y=100):
 
 
 walls, player, monsters, cafe, pasta = mapa_jogo(mapa)
-
-
 
 if __name__ == '__main__':  # jogo só será iniciado a partir do arquivo main
     jogo = Jogo()
