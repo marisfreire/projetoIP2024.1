@@ -80,7 +80,7 @@ class Jogo:
         random_index = random.randint(0, len(codigos) - 1)
         puzzle_elemento = codigos[random_index]
 
-        qtde_coletaveis = {"cafe": 4, "pasta": 4, "vida": 1}
+        qtde_coletaveis = {"cafe": 4, "pasta": 40, "vida": 1}
         dano.clear()  # Limpa a lista de danos para reiniciar as vidas
         lista_player[0].reset_position()  # Implementar o método reset_position() na classe Player
         lista_player[0].speed = 2
@@ -174,7 +174,7 @@ class Jogo:
                 player[0].move(2, 0)
             if (key[py.K_UP] or key[py.K_w]) and player[0].rect.top > 120:
                 player[0].move(0, -2)
-            if (key[py.K_DOWN] or key[py.K_s]) and player[0].rect.bottom < 770:
+            if (key[py.K_DOWN] or key[py.K_s]) and player[0].rect.bottom < 780:
                 player[0].move(0, 2)
 
             for event in py.event.get():

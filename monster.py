@@ -24,8 +24,8 @@ class Monster(object):
         if self.rect.top < 120:
             self.rect.top = 120
             self.direction = random.randint(0, 3)
-        if self.rect.bottom > 770:
-            self.rect.bottom = 770
+        if self.rect.bottom > 780:
+            self.rect.bottom = 780
             self.direction = random.randint(0, 3)
 
         # Colide com a parede, move pro outro lado aleatório
