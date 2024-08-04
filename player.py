@@ -6,6 +6,7 @@ class Player(object):
         self.initial_position = pos  # Armazena a posição inicial
         self.rect = pygame.Rect(pos[0], pos[1], 30, 30).move(5, 5)  # X , Y , Largura, Altura
        # self.image = pygame.image.load('')
+        self.speed = 2
 
     def reset_position(self):
         # Redefine a posição do jogador para a posição inicial
@@ -21,8 +22,8 @@ class Player(object):
     def move_single_axis(self, dx, dy):
         from main import walls
         # Mover o retângulo
-        self.rect.x += dx * 5
-        self.rect.y += dy * 5
+        self.rect.x += dx * self.speed
+        self.rect.y += dy * self.speed
 
         # Se você colide com uma parede, você muda de direção
         for wall in walls:

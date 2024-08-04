@@ -1,12 +1,18 @@
 import random
 import pygame
 
+
 class Monster(object):
     def __init__(self, pos):
+        self.initial_position = pos  # Armazena a posição inicial
         self.rect = pygame.Rect(pos[0], pos[1], 40, 40)
         self.dist = 3
         self.direction = random.randint(0, 3)
         self.steps = random.randint(3, 6) * 40
+
+    def reset_position(self):
+        # Redefine a posição do jogador para a posição inicial
+        self.rect.topleft = self.initial_position
 
     def move(self):
         direction_list = ((-10, 0), (10, 0), (0, -10), (0, 10))

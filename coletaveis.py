@@ -10,8 +10,10 @@ class Coletaveis(object):
         self.tipo = tipo_coletavel
         if tipo_coletavel == 'cafe':
             self.image = pygame.image.load('imagens_pixel/cafezinho.png')
-        else:
+        elif tipo_coletavel == 'pasta':
             self.image = pygame.image.load('imagens_pixel/pasta.png')
+        else:
+            self.image = pygame.image.load('heart.png')
 
     def randomizar(self):
         from main import mapa
@@ -29,6 +31,3 @@ class Coletaveis(object):
             if mapa[new_col][new_row] == '1':
                 # Deve colocar o coletável nessa nova posição
                 return Coletaveis(self.tipo, (new_row * 40, 100 + new_col * 40))
-
-
-
