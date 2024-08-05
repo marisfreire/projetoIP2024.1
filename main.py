@@ -8,7 +8,7 @@ from collision import check_collision
 from wall import *
 from funcoes_auxiliares import *
 import random
-from quebracabeca import *
+#from quebracabeca import *
 
 
 mapa = [".000000040000000000000000000000.",
@@ -77,10 +77,12 @@ class Jogo:
         seg = 45 * 60
         time_seg = 45
         lista_imagens = ['heart.png', 'heart.png', 'heart.png']
+        lista_imagens_puzzle = ['Hello-World-1.png','Hello-World-2.png','Hello-World-3.png','Hello-World-4.png', 'Hello-World-5.png']
+        cont = 0
         random_index = random.randint(0, len(codigos) - 1)
         puzzle_elemento = codigos[random_index]
 
-        qtde_coletaveis = {"cafe": 4, "pasta": 40, "vida": 1}
+        qtde_coletaveis = {"cafe": 4, "pasta": 4, "vida": 1}
         dano.clear()  # Limpa a lista de danos para reiniciar as vidas
         lista_player[0].reset_position()  # Implementar o método reset_position() na classe Player
         lista_player[0].speed = 2
@@ -101,7 +103,7 @@ class Jogo:
             self.tela.fill('white')
             self.tela.blit(background, (0, 100))
 
-            desenhar_puzzle(self, puzzle_elemento)
+            desenhar_puzzle(self, lista_imagens_puzzle,cont)
             desenhar_coracoes(self, lista_imagens)
 
             if seg % 60 == 0:  # Significa que passaram-se 60 frames, ou seja, um segundo
@@ -145,6 +147,12 @@ class Jogo:
             novos_coletaveis(self, lista_pasta, 'pasta', player, qtde_coletaveis)
             if qtde_coletaveis['pasta'] == 0:
                 self.vitoria(lista_walls, lista_player, lista_monsters, lista_cafe, lista_pasta, lista_vida)
+            elif qtde_coletaveis['pasta'] == 3:
+                cont = 1
+            elif qtde_coletaveis['pasta'] == 2:
+                cont = 2
+            elif qtde_coletaveis['pasta'] == 1:
+                cont = 3
 
             # Monsters e uma lista de objetos Monster()
             for monster in monsters:
@@ -213,7 +221,7 @@ class Jogo:
                 'Poxaaa...Infelizmente você perdeu seu crachá',
                 200, 270, 'White', 40
             )
-
+            
             self.mensagem_tela(
                 'Pressione ENTER para reiniciar ou ESC para sair',
                 275, 390, 'White', 30

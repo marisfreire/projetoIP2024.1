@@ -58,9 +58,11 @@ def botoes(objeto):
     return reinicio_button, sair_button
 
 
-def desenhar_puzzle(objeto, puzzle):
-    objeto.tela.blit()
-
+def desenhar_puzzle(objeto, lista_imagens_puzzle, cont):
+    rect = py.Rect(400, 40, 160, 50)
+    image = py.image.load(lista_imagens_puzzle[cont])
+    objeto.tela.blit(image, rect)
+    
 
 def acelerar(objeto):
     objeto.speed += 1
