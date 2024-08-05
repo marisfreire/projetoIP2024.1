@@ -66,7 +66,7 @@ class Jogo:
             pygame.display.update()
 
             if key[py.K_RETURN]:
-                self.play(lista_walls, lista_player, lista_monsters, lista_cafe, lista_pasta, lista_vida)
+                self.instrucao(lista_walls, lista_player, lista_monsters, lista_cafe, lista_pasta, lista_vida)
 
             for event in py.event.get():
                 if event.type == py.QUIT or key[py.K_ESCAPE]:
@@ -182,10 +182,40 @@ class Jogo:
                     quit()
             pygame.display.update()
 
+    def instrucao(self, lista_walls, lista_player, lista_monsters, lista_cafe, lista_pasta, lista_vida):
+        #tela de instruções
+        while True:
+            skip_game = pular(self)
+             # Título
+            self.mensagem_tela('Instruções', 305, 20, 'pink', 100)  
+            self.mensagem_tela('Como jogar:', 70, 150, 'purple', 60)
+
+            self.mensagem_tela('Encontre todos os arquivos necessários para completar seu ', 90, 230, 'black', 34)
+            self.mensagem_tela('código antes que o tempo acabe. Desvie da Procrastinação', 120, 260, 'black', 34)
+            self.mensagem_tela('e não deixe seu crachá desaparecer! Use o café para', 170, 290, 'black', 34)
+            self.mensagem_tela('ganhar energia e superar os desafios.', 250, 320, 'black', 34)
+
+            self.mensagem_tela('Boa sorte! ', 455, 420, 'green', 40)
+            self.mensagem_tela('Complete seu código e prove que você', 210, 450, 'green', 40)
+            self.mensagem_tela('pode vencer a Procrastinação!', 270, 480, 'green', 40)
+            for event in py.event.get():
+                if event.type == py.QUIT:
+                    quit()
+                if event.type == py.KEYDOWN:
+                    if event.key == py.K_RETURN:  # Reinicia o jogo ao pressionar Enter
+                        self.play(lista_walls, lista_player, lista_monsters, lista_cafe, lista_pasta, lista_vida)
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                        if skip_game.collidepoint(event.pos):
+                            self.play(lista_walls, lista_player, lista_monsters, lista_cafe, lista_pasta, lista_vida)
+
+            
+            
+            pygame.display.update()
+
     def derrota(self, lista_walls, lista_player, lista_monsters, lista_cafe, lista_pasta, lista_vida):
         # tela de derrota
         while True:
-
+            
             # Imagem de fundo
             reinicio_button, sair_button = botoes(self)
             for event in py.event.get():
@@ -193,10 +223,7 @@ class Jogo:
                     quit()
 
                 if event.type == py.KEYDOWN:
-                    if event.key == py.K_RETURN:  # Reinicia o jogo ao pressionar Enter
-                        self.menu(lista_walls, lista_player, lista_monsters, lista_cafe, lista_pasta, lista_vida)
-                        # Sai da tela de derrota e retorna ao loop principal
-                        # colocar para voltar para a tela inicial
+                    
                     if event.key == py.K_ESCAPE:  # Sai do jogo ao pressionar Escape
                         quit()
 

@@ -54,8 +54,15 @@ def botoes(objeto):
     sair_button = py.draw.rect(objeto.tela, '#a93535', (750, 480, 250, 100))  # vermelho
     sair_text = objeto.fonte.render('SAIR', True, 'black')
     objeto.tela.blit(sair_text, (835 + 10, 488 + 30))
-
     return reinicio_button, sair_button
+def pular(objeto):
+    background = py.image.load("branco.webp")
+    background = py.transform.scale(background, (1280, 820))
+    objeto.tela.blit(background, (0, 0))
+    skip_game = py.draw.rect(objeto.tela, '#0000FF', (1080, 720, 150, 50)) # azul
+    skip_text = objeto.fonte.render('JOGAR', True, ' black')
+    objeto.tela.blit(skip_text, (1080 + 10, 720 + 10))
+    return skip_game
 
 
 def desenhar_puzzle(objeto, puzzle):
