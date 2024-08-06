@@ -1,4 +1,3 @@
-
 import pygame as py
 from config import *
 from player import *
@@ -8,8 +7,6 @@ from collision import check_collision
 from wall import *
 from funcoes_auxiliares import *
 import random
-from quebracabeca import *
-
 
 mapa = [".000000040000000000000000000000.",
         "01111112100011111121121111212110",
@@ -43,14 +40,17 @@ class Jogo:
         self.fonte = None
         py.init()
         self.tela = py.display.set_mode((largura, altura))  # tamanho da tela
-        self.nome_oficial = 'CinEncontre'
+        self.nome_oficial = 'Cincontre'
         py.display.set_caption(self.nome_oficial)
+
+        self.li_instrucoes = False
+        self.tempo_esgotado = False
 
         self.clock = py.time.Clock()
         self.clock.tick(FPS)
 
     def mensagem_tela(self, mensagem, pos_x, pos_y, cor, tam_fonte):
-        self.fonte = pygame.font.Font(fonte_file, tam_fonte)
+        self.fonte = pygame.font.Font(fonte_upheav, tam_fonte)
         msg = self.fonte.render(f'{mensagem}', True, cor)
         msg_rect = msg.get_rect(topleft=(pos_x, pos_y))
         self.tela.blit(msg, msg_rect)
@@ -59,14 +59,16 @@ class Jogo:
         # Loop do jogo
         while True:
             key = py.key.get_pressed()
-            self.tela.fill('white')
-            self.mensagem_tela('CINCONTRE', 375, 20, 'Black', 100)
+            self.fonte = gerar_fonte(fonte_upheav, 100)
+            desenhar_menu(self)
 
-            self.mensagem_tela('Pressione ENTER para jogar', 150, 500, black, 70)
             pygame.display.update()
 
             if key[py.K_RETURN]:
-                self.instrucao(lista_walls, lista_player, lista_monsters, lista_cafe, lista_pasta, lista_vida)
+                if not self.li_instrucoes:
+                    self.instrucao(lista_walls, lista_player, lista_monsters, lista_cafe, lista_pasta, lista_vida)
+                else:
+                    self.play(lista_walls, lista_player, lista_monsters, lista_cafe, lista_pasta, lista_vida)
 
             for event in py.event.get():
                 if event.type == py.QUIT or key[py.K_ESCAPE]:
@@ -80,7 +82,7 @@ class Jogo:
         random_index = random.randint(0, len(codigos) - 1)
         puzzle_elemento = codigos[random_index]
 
-        qtde_coletaveis = {"cafe": 4, "pasta": 40, "vida": 1}
+        qtde_coletaveis = {"cafe": 4, "pasta": 4, "vida": 1}
         dano.clear()  # Limpa a lista de danos para reiniciar as vidas
         lista_player[0].reset_position()  # Implementar o método reset_position() na classe Player
         lista_player[0].speed = 2
@@ -101,13 +103,12 @@ class Jogo:
             self.tela.fill('white')
             self.tela.blit(background, (0, 100))
 
-            desenhar_puzzle(self, puzzle_elemento)
             desenhar_coracoes(self, lista_imagens)
 
             if seg % 60 == 0:  # Significa que passaram-se 60 frames, ou seja, um segundo
                 time_seg -= 1
 
-            self.fonte = py.font.Font(fonte_file, 100)
+            self.fonte = py.font.Font(fonte_upheav, 100)
             if time_seg < 10:
                 text_timer = self.fonte.render(f'00:0{time_seg}', True, black)
             else:
@@ -116,13 +117,12 @@ class Jogo:
             self.tela.blit(text_timer, timer_rect)
 
             if time_seg == 0:
+                self.tempo_esgotado = True
                 self.derrota(lista_walls, lista_player, lista_monsters, lista_cafe, lista_pasta, lista_vida)
 
             # Player e uma lista de objetos Player()
             for jog in player:
-                # MUDAR ISSO AQUI PARA
-                # self.tela.blit(jog.image, jog.rect)
-                py.draw.rect(self.tela, 'purple', jog.rect)
+                self.tela.blit(jog.image, jog.rect)
 
             # Walls e uma lista de objetos Wall()
             for wall in walls:
@@ -148,9 +148,7 @@ class Jogo:
 
             # Monsters e uma lista de objetos Monster()
             for monster in monsters:
-                # MUDAR ISSO AQUI PARA
-                # self.tela.blit(monster.image, monster.rect)
-                py.draw.rect(self.tela, 'blue', monster.rect)
+                self.tela.blit(monster.image, monster.rect)
                 monster.move()
                 if check_collision(player[0], monster) and invincible_timer == 0:  # Detecta as colisões entre os
                     # inimigos e os players
@@ -183,47 +181,33 @@ class Jogo:
             pygame.display.update()
 
     def instrucao(self, lista_walls, lista_player, lista_monsters, lista_cafe, lista_pasta, lista_vida):
-        #tela de instruções
+        # Tela de instruções
         while True:
-            skip_game = pular(self)
-             # Título
-            self.mensagem_tela('Instruções', 305, 20, 'pink', 100)  
-            self.mensagem_tela('Como jogar:', 70, 150, 'purple', 60)
 
-            self.mensagem_tela('Encontre todos os arquivos necessários para completar seu ', 90, 230, 'black', 34)
-            self.mensagem_tela('código antes que o tempo acabe. Desvie da Procrastinação', 120, 260, 'black', 34)
-            self.mensagem_tela('e não deixe seu crachá desaparecer! Use o café para', 170, 290, 'black', 34)
-            self.mensagem_tela('ganhar energia e superar os desafios.', 250, 320, 'black', 34)
+            self.li_instrucoes = desenhar_instrucoes(self)
 
-            self.mensagem_tela('Boa sorte! ', 455, 420, 'green', 40)
-            self.mensagem_tela('Complete seu código e prove que você', 210, 450, 'green', 40)
-            self.mensagem_tela('pode vencer a Procrastinação!', 270, 480, 'green', 40)
             for event in py.event.get():
                 if event.type == py.QUIT:
                     quit()
                 if event.type == py.KEYDOWN:
                     if event.key == py.K_RETURN:  # Reinicia o jogo ao pressionar Enter
                         self.play(lista_walls, lista_player, lista_monsters, lista_cafe, lista_pasta, lista_vida)
-                if event.type == pygame.MOUSEBUTTONDOWN:
-                        if skip_game.collidepoint(event.pos):
-                            self.play(lista_walls, lista_player, lista_monsters, lista_cafe, lista_pasta, lista_vida)
 
-            
-            
             pygame.display.update()
 
     def derrota(self, lista_walls, lista_player, lista_monsters, lista_cafe, lista_pasta, lista_vida):
         # tela de derrota
         while True:
-            
+
             # Imagem de fundo
+
             reinicio_button, sair_button = botoes(self)
             for event in py.event.get():
                 if event.type == py.QUIT:
                     quit()
 
                 if event.type == py.KEYDOWN:
-                    
+
                     if event.key == py.K_ESCAPE:  # Sai do jogo ao pressionar Escape
                         quit()
 
@@ -234,17 +218,8 @@ class Jogo:
                         quit()
 
             # Título
-            self.mensagem_tela('GAME OVER', 375, 120, '#ffffff', 100)
+            desenhar_derrota(self, self.tempo_esgotado)
 
-            self.mensagem_tela(
-                'Poxaaa...Infelizmente você perdeu seu crachá',
-                200, 270, 'White', 40
-            )
-
-            self.mensagem_tela(
-                'Pressione ENTER para reiniciar ou ESC para sair',
-                275, 390, 'White', 30
-            )
             pygame.display.update()
 
     # tela de vitoria
@@ -253,13 +228,7 @@ class Jogo:
             # Desenho da tela
             reinicio_button, sair_button = botoes(self)
             # Títulos e mensagens
-            self.mensagem_tela('Você Venceu', 365, 120, '#ffffff', 100)
-            self.mensagem_tela('Parabéns!!', 530, 270, 'red', 40)
-            self.mensagem_tela('Você obteve todas as peças do Quebra-Cabeça.', 140, 300, 'red', 40)
-            self.mensagem_tela(
-                'Pressione ENTER para jogar novamente ou ESC para sair',
-                190, 390, 'white', 30
-            )
+            desenhar_vitoria(self)
 
             for event in py.event.get():
                 if event.type == py.QUIT:
