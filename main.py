@@ -29,7 +29,6 @@ mapa = [".000000040000000000000000000000.",
 
 dano = []
 morreu = False
-
 codigos = ['print(Hello World)', 'def f(x): return x + 1', 'minha_tupla = (2, 3)',
            'for i in range(2) : print(f"Bem vindo!")']
 
@@ -53,23 +52,65 @@ class Jogo:
         self.clock = py.time.Clock()
         self.clock.tick(FPS)
 
+    def transition_fade(self, draw_current_screen, draw_next_screen, transition_speed=15):
+        
+        # Função para realizar uma transição de tela com efeito de desvanecimento.
+        fade_surface = py.Surface(self.tela.get_size())  # Superfície para o efeito de fade
+        fade_surface.fill((0, 0, 0))  # Preenche com a cor preta
+
+        alpha = 0
+        fading_in = True
+
+        # Desenha a tela atual
+        draw_current_screen()
+        py.display.flip()
+
+        while True:
+            for event in py.event.get():
+                if event.type == py.QUIT:
+                    py.quit()
+                    quit()
+
+            if fading_in:
+                alpha += transition_speed
+                if alpha >= 100:
+                    alpha = 50
+                    fading_in = False
+                    draw_next_screen()  # Desenha a próxima tela
+                    py.display.flip()
+            else:
+                alpha -= transition_speed
+                if alpha <= 0:
+                    alpha = 0
+                    break
+
+            fade_surface.set_alpha(alpha)
+            self.tela.blit(fade_surface, (0, 0))
+
+            py.display.flip()
+            self.clock.tick(60)
+
     def menu(self, lista_walls, lista_player, lista_monsters, lista_cafe, lista_pasta, lista_vida):
-        # Loop do jogo
         while True:
             key = py.key.get_pressed()
             self.fonte = gerar_fonte(fonte_upheav, 100)
             desenhar_menu(self)
-
-            pygame.display.update()
+            py.display.update()
 
             if key[py.K_RETURN]:
                 if not self.li_instrucoes:
-                    self.instrucao(lista_walls, lista_player, lista_monsters, lista_cafe, lista_pasta, lista_vida)
+                    self.transition_fade(
+                        lambda: desenhar_menu(self),  # Tela atual (menu)
+                        lambda: self.instrucao(lista_walls, lista_player, lista_monsters, lista_cafe, lista_pasta, lista_vida)  # Próxima tela (instruções)
+                    )
                 else:
-                    self.play(lista_walls, lista_player, lista_monsters, lista_cafe, lista_pasta, lista_vida)
-
+                    self.transition_fade(
+                        lambda: desenhar_menu(self),  # Tela atual (menu)
+                        lambda: self.play(lista_walls, lista_player, lista_monsters, lista_cafe, lista_pasta, lista_vida)  # Próxima tela
+                    )
             for event in py.event.get():
                 if event.type == py.QUIT or key[py.K_ESCAPE]:
+                    py.quit()
                     quit()
 
     def play(self, lista_walls, lista_player, lista_monsters, lista_cafe, lista_pasta, lista_vida):
@@ -145,8 +186,10 @@ class Jogo:
 
             if time_seg == 0:
                 self.tempo_esgotado = True
-                self.derrota(lista_walls, lista_player, lista_monsters, lista_cafe, lista_pasta, lista_vida)
-
+                self.transition_fade(
+                        lambda: self.tela,
+                        lambda: self.derrota(lista_walls, lista_player, lista_monsters, lista_cafe, lista_pasta, lista_vida)
+                        )
             # Player e uma lista de objetos Player()
             for jog in player:
                 self.tela.blit(jog.image, jog.rect)
@@ -173,6 +216,7 @@ class Jogo:
             if qtde_coletaveis['pasta'] == 0:
 
                 self.vitoria(lista_walls, lista_player, lista_monsters, lista_cafe, lista_pasta, lista_vida)
+
             elif qtde_coletaveis['pasta'] == 3:
                 cont = 1
             elif qtde_coletaveis['pasta'] == 2:
@@ -204,8 +248,10 @@ class Jogo:
                         lista_imagens[1] = 'imagens_pixel/damage.png'
 
                     if len(dano) == 3:
-                        self.derrota(lista_walls, lista_player, lista_monsters, lista_cafe, lista_pasta, lista_vida)
-
+                        self.transition_fade(
+                        lambda: self.tela,
+                        lambda: self.derrota(lista_walls, lista_player, lista_monsters, lista_cafe, lista_pasta, lista_vida)
+                        )
             key = py.key.get_pressed()
             if key[py.K_LEFT] or key[py.K_a]:
                 player[0].move(-2, 0)
@@ -218,9 +264,10 @@ class Jogo:
 
             for event in py.event.get():
                 if event.type == py.QUIT or key[py.K_ESCAPE]:
+                    py.quit()
                     quit()
 
-            pygame.display.update()
+            py.display.update()
 
     def instrucao(self, lista_walls, lista_player, lista_monsters, lista_cafe, lista_pasta, lista_vida):
         # Tela de instruções
@@ -240,16 +287,23 @@ class Jogo:
 
             for event in py.event.get():
                 if event.type == py.QUIT:
+                    py.quit()
                     quit()
                 if event.type == py.KEYDOWN:
                     if event.key == py.K_RETURN:  # Reinicia o jogo ao pressionar Enter
-                        self.play(lista_walls, lista_player, lista_monsters, lista_cafe, lista_pasta, lista_vida)
+                        self.transition_fade(
+                            lambda: desenhar_instrucoes(self),  # Tela atual (instruções)
+                            lambda: self.play(lista_walls, lista_player, lista_monsters, lista_cafe, lista_pasta, lista_vida)  # Próxima tela (jogo)
+                        )
                 if event.type == py.MOUSEBUTTONDOWN:
                     if play_button.collidepoint(event.pos):
                         self.botao_sound.play(0)
-                        self.play(lista_walls, lista_player, lista_monsters, lista_cafe, lista_pasta, lista_vida)
+                        self.transition_fade(
+                            lambda: desenhar_instrucoes(self),  # Tela atual (instruções)
+                            lambda: self.play(lista_walls, lista_player, lista_monsters, lista_cafe, lista_pasta, lista_vida)  # Próxima tela (jogo)
+                        )
 
-            pygame.display.update()
+            py.display.update()
 
     def derrota(self, lista_walls, lista_player, lista_monsters, lista_cafe, lista_pasta, lista_vida):
         # tela de derrota
@@ -264,27 +318,51 @@ class Jogo:
             reinicio_button, sair_button = botoes(self)
             for event in py.event.get():
                 if event.type == py.QUIT:
+                    py.quit()
                     quit()
 
                 if event.type == py.KEYDOWN:
-
                     if event.key == py.K_ESCAPE:  # Sai do jogo ao pressionar Escape
+                        py.quit()
                         quit()
 
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     if reinicio_button.collidepoint(event.pos):
                         self.botao_sound.play(0)
-                        self.menu(lista_walls, lista_player, lista_monsters, lista_cafe, lista_pasta, lista_vida)
+                        self.transition_fade(
+                            lambda: desenhar_derrota(self, self.tempo_esgotado),  # Tela atual (derrota)
+                            lambda: self.menu(lista_walls, lista_player, lista_monsters, lista_cafe, lista_pasta, lista_vida)  # Próxima tela (menu)
+                        )
                     if sair_button.collidepoint(event.pos):
                         self.botao_sound.play(0)
+                        py.quit()
                         quit()
 
             # Título
             desenhar_derrota(self, self.tempo_esgotado)
+            for event in py.event.get():
+                if event.type == py.QUIT:
+                    py.quit()
+                    quit()
 
-            pygame.display.update()
+                if event.type == py.KEYDOWN:
+                    if event.key == py.K_ESCAPE:  # Sai do jogo ao pressionar Escape
+                        py.quit()
+                        quit()
 
-    # tela de vitoria
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    if reinicio_button.collidepoint(event.pos):
+                        self.botao_sound.play(0)
+                        self.transition_fade(
+                            lambda: desenhar_derrota(self, self.tempo_esgotado),  # Tela atual (derrota)
+                            lambda: self.menu(lista_walls, lista_player, lista_monsters, lista_cafe, lista_pasta, lista_vida)  # Próxima tela (menu)
+                        )
+                    if sair_button.collidepoint(event.pos):
+                        self.botao_sound.play(0)
+                        py.quit()
+                        quit()
+            py.display.update()
+
     def vitoria(self, lista_walls, lista_player, lista_monsters, lista_cafe, lista_pasta, lista_vida):
         self.soundtrack.stop()
         vitoria_sound = pygame.mixer.Sound('music/vitoria.mp3')
@@ -303,8 +381,10 @@ class Jogo:
 
                 if event.type == py.KEYDOWN:
                     if event.key == py.K_RETURN:
-                        self.menu(lista_walls, lista_player, lista_monsters, lista_cafe, lista_pasta, lista_vida)
-                        return
+                        self.transition_fade(
+                            lambda: desenhar_vitoria(self),  # Tela atual (vitória)
+                            lambda: self.menu(lista_walls, lista_player, lista_monsters, lista_cafe, lista_pasta, lista_vida)  # Próxima tela (menu)
+                        )
                     if event.key == py.K_ESCAPE:
                         py.quit()
                         quit()
@@ -312,8 +392,10 @@ class Jogo:
                 if event.type == py.MOUSEBUTTONDOWN:
                     if reinicio_button.collidepoint(event.pos):
                         self.botao_sound.play(0)
-
-                        self.menu(lista_walls, lista_player, lista_monsters, lista_cafe, lista_pasta, lista_vida)
+                        self.transition_fade(
+                            lambda: desenhar_vitoria(self),  # Tela atual (vitória)
+                            lambda: self.menu(lista_walls, lista_player, lista_monsters, lista_cafe, lista_pasta, lista_vida)  # Próxima tela (menu)
+                        )
                     if sair_button.collidepoint(event.pos):
                         self.botao_sound.play(0)
                         py.quit()

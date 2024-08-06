@@ -1,3 +1,5 @@
+import pygame
+
 largura = 1280
 altura = 820  # Precisamos de espaço para o Timer e para o Quebra cabeça, então será um pouco maior do que
 # a formatação HD normal
@@ -15,3 +17,4 @@ red_time = (255, 0, 0)
 # fonte
 fonte_upheav = "fonte/upheavtt.ttf"
 fonte_2 = "fonte/Big Pixel demo.otf"
+

@@ -2,7 +2,6 @@ import pygame as py
 from collision import check_collision
 from config import *
 
-
 def centralizar(surface):
     pos_x = (largura - (surface.get_width())) / 2
     pos_y = (altura - (surface.get_height())) / 2
