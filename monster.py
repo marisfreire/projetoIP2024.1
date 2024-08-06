@@ -22,8 +22,8 @@ class Monster(object):
         self.rect.y += dy
 
         # Limitar a saída do monstro da tela
-        if self.rect.top < 120:
-            self.rect.top = 120
+        if self.rect.top < 100:
+            self.rect.top = 100
             self.direction = random.randint(0, 3)
         if self.rect.bottom > 780:
             self.rect.bottom = 780
