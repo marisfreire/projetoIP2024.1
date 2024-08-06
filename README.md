@@ -43,7 +43,7 @@ Nele, nosso jogador precisa desviar da Procrastinação e conseguir encontrar to
 
 ## Contribuidores e suas respectivas funções
 
-* Dayane Carla [Github]() 
+* Dayane Carla [Github](https://github.com/dayanetecla) 
     * comportamento dos coletáveis.
     * visuais do jogador e do inimigo.
 * Giovanna Marques Mafra [Github](https://github.com/GiovannaMafra) 
@@ -53,14 +53,14 @@ Nele, nosso jogador precisa desviar da Procrastinação e conseguir encontrar to
 * Layla Beatriz [Github](https://github.com/laylabeatriz) 
     * tela de vitória e de instruções.
     * timer.
-* Luma Rios [Github]() 
+* Luma Rios [Github](https://github.com/diskluma) 
     * visual dos coletáveis.
     * movimento e comportamento do jogador.
 * Mariana Freire [Github](https://github.com/marisfreire)
     * concepção do mapa.
     * código base.
     * organização do código.
-* Rafael Mendes Bezerra Xavier [Github](https://github.com/rxavier1904) 
+* Rafael Xavier [Github](https://github.com/rxavier1904) 
     * comportamento das vidas.
     * coletável vida.
     * interação player-inimigo.
@@ -73,6 +73,7 @@ Nele, nosso jogador precisa desviar da Procrastinação e conseguir encontrar to
 * **Dicionários**: utilizado para guardar os tipos de coletáveis.
 * **Condicionais**: Foi utilizado para saber qual tipo de coletável aconteceu uma colisão, conferir o tipo de eventos nos botões na tela de derrota, conferir se o personagem ainda tem vidas suficientes para a continuação do jogo, ou seja, são unidades fundamentais e estão por quase todos os módulos.
 * **Listas**: utilizadas para guardar imagens das vidas e do puzzle.
+* **Laços de Repetição**: utilizadas para percorrer listas e no loop principal do jogo.
 
 ## Desafios e Erros
 * **Maior erro**: Certamente, um dos principais desafios enfrentados foi a organização e o gerenciamento do tempo. Como para a maioria dos membros do grupo esta foi a primeira experiência em desenvolvimento de software colaborativo, utilizando ferramentas como o Git, não tivemos uma compreensão clara sobre o tempo necessário para o desenvolvimento e implementação de cada componente do jogo. Isso resultou em um período de idealização mais longo do que inicialmente previsto.
