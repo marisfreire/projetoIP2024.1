@@ -18,5 +18,13 @@ class Wall(object):
             self.image = py.image.load('imagens_pixel/pc back.png')
         elif wall_type == "9":
             self.image = py.image.load('imagens_pixel/pc right.png')
+        elif wall_type == "m":
+            self.image = py.image.load('imagens_pixel/tableupperleft.png')
+        elif wall_type == "n":
+            self.image = py.image.load('imagens_pixel/tableupperright.png')
+        elif wall_type == "o":
+            self.image = py.image.load('imagens_pixel/tablebottomleft.png')
+        elif wall_type == "p":
+            self.image = py.image.load('imagens_pixel/tablebottomright.png')
         else:
             self.image = None
