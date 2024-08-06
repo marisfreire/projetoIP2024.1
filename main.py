@@ -47,14 +47,11 @@ class Jogo:
         self.tempo_esgotado = False
 
         self.soundtrack = pygame.mixer.Sound('music/jazzyfrenchy.mp3')
+        self.botao_sound = pygame.mixer.Sound('music/botao.mp3')
+        self.botao_sound.set_volume(0.4)
+
         self.clock = py.time.Clock()
         self.clock.tick(FPS)
-
-    def mensagem_tela(self, mensagem, pos_x, pos_y, cor, tam_fonte):
-        self.fonte = pygame.font.Font(fonte_upheav, tam_fonte)
-        msg = self.fonte.render(f'{mensagem}', True, cor)
-        msg_rect = msg.get_rect(topleft=(pos_x, pos_y))
-        self.tela.blit(msg, msg_rect)
 
     def menu(self, lista_walls, lista_player, lista_monsters, lista_cafe, lista_pasta, lista_vida):
         # Loop do jogo
@@ -93,7 +90,6 @@ class Jogo:
         lista_player[0].speed = 2
         for monster in lista_monsters:
             monster.reset_position()
-
 
         self.soundtrack.play(-1)
         self.soundtrack.set_volume(0.3)
@@ -250,6 +246,7 @@ class Jogo:
                         self.play(lista_walls, lista_player, lista_monsters, lista_cafe, lista_pasta, lista_vida)
                 if event.type == py.MOUSEBUTTONDOWN:
                     if play_button.collidepoint(event.pos):
+                        self.botao_sound.play(0)
                         self.play(lista_walls, lista_player, lista_monsters, lista_cafe, lista_pasta, lista_vida)
 
             pygame.display.update()
@@ -276,8 +273,10 @@ class Jogo:
 
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     if reinicio_button.collidepoint(event.pos):
+                        self.botao_sound.play(0)
                         self.menu(lista_walls, lista_player, lista_monsters, lista_cafe, lista_pasta, lista_vida)
                     if sair_button.collidepoint(event.pos):
+                        self.botao_sound.play(0)
                         quit()
 
             # Título
@@ -312,9 +311,11 @@ class Jogo:
 
                 if event.type == py.MOUSEBUTTONDOWN:
                     if reinicio_button.collidepoint(event.pos):
+                        self.botao_sound.play(0)
+
                         self.menu(lista_walls, lista_player, lista_monsters, lista_cafe, lista_pasta, lista_vida)
-                        return
                     if sair_button.collidepoint(event.pos):
+                        self.botao_sound.play(0)
                         py.quit()
                         quit()
             py.display.update()
