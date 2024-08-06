@@ -9,7 +9,7 @@ class Monster(object):
         self.dist = 3
         self.direction = random.randint(0, 3)
         self.steps = random.randint(3, 6) * 40
-        self.image = pygame.image.load('imagens_pixel/heart.png')
+        self.image = pygame.image.load('imagens_personagens/walkfrente.png')
 
     def reset_position(self):
         # Redefine a posição do jogador para a posição inicial
