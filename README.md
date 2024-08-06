@@ -60,7 +60,7 @@ Nele, nosso jogador precisa desviar da Procrastinação e conseguir encontrar to
     * concepção do mapa.
     * código base.
     * organização do código.
-* Rafael Mendes Bezerra Xavier [Github](https://github.com/rxavier1904) 
+* Rafael Xavier [Github](https://github.com/rxavier1904) 
     * comportamento das vidas.
     * coletável vida.
     * interação player-inimigo.
