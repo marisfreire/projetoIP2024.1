@@ -267,9 +267,7 @@ class Jogo:
                     quit()
 
                 if event.type == py.KEYDOWN:
-                    if event.key == py.K_RETURN:
-                        self.botao_sound.play(0)
-                        self.menu(lista_walls, lista_player, lista_monsters, lista_cafe, lista_pasta, lista_vida)
+
                     if event.key == py.K_ESCAPE:  # Sai do jogo ao pressionar Escape
                         quit()
 
