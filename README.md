@@ -73,6 +73,7 @@ Nele, nosso jogador precisa desviar da Procrastinação e conseguir encontrar to
 * **Dicionários**: utilizado para guardar os tipos de coletáveis.
 * **Condicionais**: Foi utilizado para saber qual tipo de coletável aconteceu uma colisão, conferir o tipo de eventos nos botões na tela de derrota, conferir se o personagem ainda tem vidas suficientes para a continuação do jogo, ou seja, são unidades fundamentais e estão por quase todos os módulos.
 * **Listas**: utilizadas para guardar imagens das vidas e do puzzle.
+* **Laços de Repetição**: utilizadas para percorrer listas e no loop principal do jogo.
 
 ## Desafios e Erros
 * **Maior erro**: Certamente, um dos principais desafios enfrentados foi a organização e o gerenciamento do tempo. Como para a maioria dos membros do grupo esta foi a primeira experiência em desenvolvimento de software colaborativo, utilizando ferramentas como o Git, não tivemos uma compreensão clara sobre o tempo necessário para o desenvolvimento e implementação de cada componente do jogo. Isso resultou em um período de idealização mais longo do que inicialmente previsto.
