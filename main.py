@@ -115,7 +115,7 @@ class Jogo:
 
     def play(self, lista_walls, lista_player, lista_monsters, lista_cafe, lista_pasta, lista_vida):
         invincible_timer = 0  # Inicializa o temporizador de invencibilidade
-        seg = 45 * 60
+        seg = 30 * 60
         time_seg = 30
         lista_imagens = ['imagens_pixel/heart.png', 'imagens_pixel/heart.png', 'imagens_pixel/heart.png']
         lista_imagens_puzzle = ['puzzle/Hello-World-1.png',
