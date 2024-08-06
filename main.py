@@ -97,12 +97,20 @@ class Jogo:
 
         self.soundtrack.play(-1)
         self.soundtrack.set_volume(0.3)
-
+        opacidade = 0
         while True:
 
             # Atualiza o temporizador de invencibilidade
+            if opacidade == 255:
+                opacidade = 0
+            else:
+                opacidade = 255
             if invincible_timer > 0:
                 invincible_timer -= 1
+            if 1 <= invincible_timer <= 30:
+                lista_player[0].image.set_alpha(opacidade)
+            else:
+                lista_player[0].image.set_alpha(255)
 
             # Contador
             if seg > 0:
@@ -183,10 +191,14 @@ class Jogo:
                 if check_collision(player[0], monster) and invincible_timer == 0:  # Detecta as colisões entre os
                     # inimigos e os players
                     dano.append('dano')
-                    invincible_timer = 30  # 60 frames = 1 segundo de invicibilidade
+                    invincible_timer = 30  # 30 frames = 0.5 segundo de invicibilidade
+
+                    # efeito sonoro
                     tomou_dano = pygame.mixer.Sound('music/monstro.mp3')
                     tomou_dano.play(0)
                     tomou_dano.set_volume(0.3)
+
+                    # efeito visual
                     if len(dano) == 1:
                         desenhar_coracoes(self, lista_imagens)
                         lista_imagens[2] = 'imagens_pixel/damage.png'
