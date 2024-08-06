@@ -43,7 +43,7 @@ Nele, nosso jogador precisa desviar da Procrastinação e conseguir encontrar to
 
 ## Contribuidores e suas respectivas funções
 
-* Dayane Carla [Github]() 
+* Dayane Carla [Github](https://github.com/dayanetecla) 
     * comportamento dos coletáveis.
     * visuais do jogador e do inimigo.
 * Giovanna Marques Mafra [Github](https://github.com/GiovannaMafra) 
@@ -53,7 +53,7 @@ Nele, nosso jogador precisa desviar da Procrastinação e conseguir encontrar to
 * Layla Beatriz [Github](https://github.com/laylabeatriz) 
     * tela de vitória e de instruções.
     * timer.
-* Luma Rios [Github]() 
+* Luma Rios [Github](https://github.com/diskluma) 
     * visual dos coletáveis.
     * movimento e comportamento do jogador.
 * Mariana Freire [Github](https://github.com/marisfreire)
