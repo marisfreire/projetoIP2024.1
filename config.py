@@ -8,8 +8,9 @@ FPS = 60  # 60 frames por segundo, o suficiente para o jogo rodar bem
 black = (0, 0, 0)
 white = (255, 255, 255)
 grey = (128, 128, 128)
-green = (62, 194, 44)
+green = (3, 119, 0)
 red = (169, 53, 53)
+red_time = (255, 0, 0)
 
 # fonte
 fonte_upheav = "fonte/upheavtt.ttf"

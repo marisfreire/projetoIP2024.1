@@ -13,7 +13,7 @@ class Coletaveis(object):
         elif tipo_coletavel == 'pasta':
             self.image = pygame.image.load('imagens_pixel/pasta.png')
         else:
-            self.image = pygame.image.load('vida.png')
+            self.image = pygame.image.load('imagens_pixel/vida.png')
 
     def randomizar(self):
         from main import mapa

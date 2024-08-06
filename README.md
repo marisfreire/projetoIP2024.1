@@ -79,5 +79,7 @@ Nele, nosso jogador precisa desviar da Procrastinação e conseguir encontrar to
 * **Maior desafio**: A principal dificuldade enfrentada no projeto foi, sem dúvida, a falta de familiaridade e segurança no uso das ferramentas Git e GitHub para a produção coletiva do código. Até então, estávamos acostumados a desenvolver de forma individual, o que tornou essa transição desafiadora. Para superar essa dificuldade, foi necessário adotar uma organização rigorosa na separação das tarefas e manter uma comunicação constante entre os membros da equipe, garantindo que todos estivessem cientes do progresso e das atualizações realizadas no código, especialmente quando era feito um push.
 * **Lições aprendidas**: Este projeto foi extremamente valioso, tanto no aspecto técnico quanto no desenvolvimento de habilidades pessoais. Ele nos proporcionou a oportunidade de aplicar na prática os conceitos aprendidos na disciplina e de adquirir novos conhecimentos, como a importância da programação orientada a objetos e o uso de ferramentas como o Git. Além disso, tivemos a chance de vivenciar o processo de construção de um software de maneira mais profissional, indo além das atividades propostas no Dikastis. No âmbito das soft skills, o projeto nos permitiu desenvolver competências essenciais, como comunicação, organização e planejamento, que foram fundamentais para o sucesso do trabalho em equipe.
 
-
+## Créditos
+* **Trilha sonora**: Jazzy Frenchy - Benjamin Tissot [bensound.com](https://www.bensound.com/royalty-free-music/track/jazzy-frenchy-upbeat-funny), coletou.mp3, fail.mp3 e vitoria.mp3 [Pixabay](https://pixabay.com/)
+* **Fontes**: Upheaval e Big Pixel (Versão Demo) [Dafont](https://www.dafont.com/pt/)
 

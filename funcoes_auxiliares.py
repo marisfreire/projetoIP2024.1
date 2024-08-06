@@ -86,7 +86,7 @@ def desenhar_derrota(objeto, tempo_esgotado):
     fonte2 = gerar_fonte(fonte_2, 24)
 
     if tempo_esgotado:
-        mensagem = 'Poxaaaa.. parece que você ficou sem tempo e perdeu seu crachá!'
+        mensagem = 'Poxaaaa! Parece que você ficou sem tempo e perdeu seu crachá!'
     else:
         mensagem = 'A procrastinação te dominou! Você não conseguiu entregar o código!'
 
@@ -139,6 +139,10 @@ def novos_coletaveis(objeto, lista_coletaveis, item, player, qtde_coletaveis):
     for e in lista_coletaveis:
         if check_collision(e, player[0]):
             if not e.coletado:
+                coleta_sound = py.mixer.Sound('music/coletou.mp3')
+                coleta_sound.play(0, 0, 200)
+                coleta_sound.set_volume(0.3)
+
                 e.coletado = True
                 if qtde_coletaveis[item] > 0:
                     qtde_coletaveis[item] -= 1
@@ -183,7 +187,7 @@ def botoes(objeto):
     while altura_botao < (altura_reiniciar + 15):
         altura_botao += 5
 
-    reiniciar_button = py.draw.rect(objeto.tela, green, (x, y, largura_botao, altura_botao))
+    reiniciar_button = py.draw.rect(objeto.tela, green, (x, y, largura_botao, altura_botao), 0, 5)
 
     reiniciar_rect = reiniciar_text.get_rect(topleft=(x + ((largura_botao - largura_reiniciar)/2), y + (altura_reiniciar/2)))
     objeto.tela.blit(reiniciar_text, reiniciar_rect)
@@ -196,7 +200,7 @@ def botoes(objeto):
     while largura_botao < (largura_sair + 10):
         largura_botao += 5
 
-    sair_button = py.draw.rect(objeto.tela, red, (x, y, largura_botao, altura_botao))  # vermelho
+    sair_button = py.draw.rect(objeto.tela, red, (x, y, largura_botao, altura_botao), 0 , 5)  # vermelho
 
     sair_rect = sair_text.get_rect(topleft=(x + ((largura_botao - largura_sair)/2), y + (altura_sair / 2)))
     objeto.tela.blit(sair_text, sair_rect)
@@ -206,6 +210,13 @@ def botoes(objeto):
 
 def acelerar(objeto):
     objeto.speed += 1
+
+
+def desenhar_puzzle(objeto, lista_imagens_puzzle, cont):
+    rect = py.Rect(400, 20, 160, 50)
+    image = py.image.load(lista_imagens_puzzle[cont])
+    objeto.tela.blit(image, rect)
+
 
 
 

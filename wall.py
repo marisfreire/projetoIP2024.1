@@ -4,7 +4,7 @@ class Wall(object):
     def __init__(self, pos, wall_type):
         self.rect = py.Rect(pos[0], pos[1], 40, 40)
         if wall_type == "0":
-            self.image = py.image.load('wall.png')
+            self.image = py.image.load('imagens_pixel/wall.png')
         elif wall_type == "2":
             self.image = py.Surface((40, 40))
             self.image.fill((80, 76, 76))

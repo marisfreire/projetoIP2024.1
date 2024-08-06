@@ -46,6 +46,7 @@ class Jogo:
         self.li_instrucoes = False
         self.tempo_esgotado = False
 
+        self.soundtrack = pygame.mixer.Sound('music/jazzyfrenchy.mp3')
         self.clock = py.time.Clock()
         self.clock.tick(FPS)
 
@@ -77,11 +78,15 @@ class Jogo:
     def play(self, lista_walls, lista_player, lista_monsters, lista_cafe, lista_pasta, lista_vida):
         invincible_timer = 0  # Inicializa o temporizador de invencibilidade
         seg = 45 * 60
-        time_seg = 45
-        lista_imagens = ['heart.png', 'heart.png', 'heart.png']
-        random_index = random.randint(0, len(codigos) - 1)
-        puzzle_elemento = codigos[random_index]
-
+        time_seg = 30
+        lista_imagens = ['imagens_pixel/heart.png', 'imagens_pixel/heart.png', 'imagens_pixel/heart.png']
+        lista_imagens_puzzle = ['puzzle/Hello-World-1.png',
+                                'puzzle/Hello-World-2.png',
+                                'puzzle/Hello-World-3.png',
+                                'puzzle/Hello-World-4.png',
+                                'puzzle/Hello-World-5.png']
+        cont = 0
+        piscar = False
         qtde_coletaveis = {"cafe": 4, "pasta": 4, "vida": 1}
         dano.clear()  # Limpa a lista de danos para reiniciar as vidas
         lista_player[0].reset_position()  # Implementar o método reset_position() na classe Player
@@ -89,7 +94,12 @@ class Jogo:
         for monster in lista_monsters:
             monster.reset_position()
 
+
+        self.soundtrack.play(-1)
+        self.soundtrack.set_volume(0.3)
+
         while True:
+
             # Atualiza o temporizador de invencibilidade
             if invincible_timer > 0:
                 invincible_timer -= 1
@@ -104,13 +114,26 @@ class Jogo:
             self.tela.blit(background, (0, 100))
 
             desenhar_coracoes(self, lista_imagens)
+            desenhar_puzzle(self, lista_imagens_puzzle, cont)
 
             if seg % 60 == 0:  # Significa que passaram-se 60 frames, ou seja, um segundo
                 time_seg -= 1
 
             self.fonte = py.font.Font(fonte_upheav, 100)
+
             if time_seg < 10:
-                text_timer = self.fonte.render(f'00:0{time_seg}', True, black)
+                if seg % 15 == 0:
+                    if piscar:
+                        piscar = False
+                    else:
+                        piscar = True
+
+                    if piscar:
+                        cor = red_time
+                    else:
+                        cor = black
+
+                text_timer = self.fonte.render(f'00:0{time_seg}', True, cor)
             else:
                 text_timer = self.fonte.render(f'00:{time_seg}', True, black)
             timer_rect = text_timer.get_rect(topleft=(980, 2))
@@ -135,16 +158,23 @@ class Jogo:
                 novos_coletaveis(self, lista_vida, 'vida', player, qtde_coletaveis)
                 if qtde_coletaveis['vida'] == 0:
                     if len(dano) == 1:
-                        lista_imagens[2] = 'heart.png'
+                        lista_imagens[2] = 'imagens_pixel/heart.png'
                     else:
-                        lista_imagens[1] = 'heart.png'
+                        lista_imagens[1] = 'imagens_pixel/heart.png'
                     qtde_coletaveis['vida'] += 1
                     dano.pop(-1)
 
             # Desenho das pastas
             novos_coletaveis(self, lista_pasta, 'pasta', player, qtde_coletaveis)
             if qtde_coletaveis['pasta'] == 0:
+
                 self.vitoria(lista_walls, lista_player, lista_monsters, lista_cafe, lista_pasta, lista_vida)
+            elif qtde_coletaveis['pasta'] == 3:
+                cont = 1
+            elif qtde_coletaveis['pasta'] == 2:
+                cont = 2
+            elif qtde_coletaveis['pasta'] == 1:
+                cont = 3
 
             # Monsters e uma lista de objetos Monster()
             for monster in monsters:
@@ -154,13 +184,16 @@ class Jogo:
                     # inimigos e os players
                     dano.append('dano')
                     invincible_timer = 30  # 60 frames = 1 segundo de invicibilidade
+                    tomou_dano = pygame.mixer.Sound('music/monstro.mp3')
+                    tomou_dano.play(0)
+                    tomou_dano.set_volume(0.3)
                     if len(dano) == 1:
                         desenhar_coracoes(self, lista_imagens)
-                        lista_imagens[2] = 'damage.png'
+                        lista_imagens[2] = 'imagens_pixel/damage.png'
 
                     elif len(dano) == 2:
                         desenhar_coracoes(self, lista_imagens)
-                        lista_imagens[1] = 'damage.png'
+                        lista_imagens[1] = 'imagens_pixel/damage.png'
 
                     if len(dano) == 3:
                         self.derrota(lista_walls, lista_player, lista_monsters, lista_cafe, lista_pasta, lista_vida)
@@ -178,13 +211,24 @@ class Jogo:
             for event in py.event.get():
                 if event.type == py.QUIT or key[py.K_ESCAPE]:
                     quit()
+
             pygame.display.update()
 
     def instrucao(self, lista_walls, lista_player, lista_monsters, lista_cafe, lista_pasta, lista_vida):
         # Tela de instruções
         while True:
-
             self.li_instrucoes = desenhar_instrucoes(self)
+
+            fonte = gerar_fonte(fonte_upheav, 60)
+            text = fonte.render('JOGAR', True, black)
+            largura_text = text.get_width()
+            altura_text = text.get_height()
+
+            x, y = centralizar(text)
+            y += 300
+            play_button = py.draw.rect(self.tela, white, (x - 10, y + 20, largura_text + 20, altura_text + 20), 0, 5)
+            play_rect = text.get_rect(topleft=(x, y + 25))
+            self.tela.blit(text, play_rect)
 
             for event in py.event.get():
                 if event.type == py.QUIT:
@@ -192,11 +236,18 @@ class Jogo:
                 if event.type == py.KEYDOWN:
                     if event.key == py.K_RETURN:  # Reinicia o jogo ao pressionar Enter
                         self.play(lista_walls, lista_player, lista_monsters, lista_cafe, lista_pasta, lista_vida)
+                if event.type == py.MOUSEBUTTONDOWN:
+                    if play_button.collidepoint(event.pos):
+                        self.play(lista_walls, lista_player, lista_monsters, lista_cafe, lista_pasta, lista_vida)
 
             pygame.display.update()
 
     def derrota(self, lista_walls, lista_player, lista_monsters, lista_cafe, lista_pasta, lista_vida):
         # tela de derrota
+        self.soundtrack.stop()
+        falhou = pygame.mixer.Sound('music/fail.mp3')
+        falhou.play(0, 0, 200)
+        falhou.set_volume(0.3)
         while True:
 
             # Imagem de fundo
@@ -224,6 +275,10 @@ class Jogo:
 
     # tela de vitoria
     def vitoria(self, lista_walls, lista_player, lista_monsters, lista_cafe, lista_pasta, lista_vida):
+        self.soundtrack.stop()
+        vitoria_sound = pygame.mixer.Sound('music/vitoria.mp3')
+        vitoria_sound.play(0)
+        vitoria_sound.set_volume(0.5)
         while True:
             # Desenho da tela
             reinicio_button, sair_button = botoes(self)
