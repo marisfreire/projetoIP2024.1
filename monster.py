@@ -9,7 +9,7 @@ class Monster(object):
         self.dist = 3
         self.direction = random.randint(0, 3)
         self.steps = random.randint(3, 6) * 40
-        self.image = pygame.image.load('imagens_personagens/walkfrente.png')
+        self.image = pygame.image.load('imagens_personagens/inimigo_frente.png')
 
     def reset_position(self):
         # Redefine a posição do jogador para a posição inicial
@@ -29,6 +29,15 @@ class Monster(object):
             self.rect.bottom = 780
             self.direction = random.randint(0, 3)
 
+        if dx > 0:
+            self.image = pygame.image.load('imagens_personagens/inimigodireita.png')
+        if dx < 0:
+            self.image = pygame.image.load('imagens_personagens/inimigoesquerda.png')
+        if dy > 0:
+            self.image = pygame.image.load('imagens_personagens/inimigo_frente.png')
+        if dy < 0:
+            self.image = pygame.image.load('imagens_personagens/inimigo_costas.png')
+
         # Colide com a parede, move pro outro lado aleatório
         collide = False
         from main import walls
@@ -44,6 +53,7 @@ class Monster(object):
                     self.rect.bottom = wall.rect.top
                 if dy < 0:  # Move para cima, bateu no lado de baixo da parede
                     self.rect.top = wall.rect.bottom
+                    
 
         self.steps -= 1
         if collide or self.steps == 0:

@@ -8,6 +8,7 @@ class Player(object):
         self.image = pygame.image.load('imagens_personagens/pfrente.png')
         self.speed = 2
 
+
     def reset_position(self):
         # Redefine a posição do jogador para a posição inicial
         self.rect.topleft = self.initial_position
@@ -18,6 +19,15 @@ class Player(object):
             self.move_single_axis(dx, 0)
         if dy != 0:
             self.move_single_axis(0, dy)
+
+        if dx > 0:
+            self.image = pygame.image.load('imagens_personagens/pdireita.png')
+        if dx < 0:
+            self.image = pygame.image.load('imagens_personagens/pesquerda.png')
+        if dy > 0:
+            self.image = pygame.image.load('imagens_personagens/pfrente.png')
+        if dy < 0:
+            self.image = pygame.image.load('imagens_personagens/ptras.png')
 
     def move_single_axis(self, dx, dy):
         from main import walls
